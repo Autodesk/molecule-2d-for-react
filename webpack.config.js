@@ -3,11 +3,12 @@ const path = require('path');
 module.exports = {
   entry: {
     app: ['./src/main.js'],
+    example: ['./example/js/main.js'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/js/',
-    filename: 'bundle.js',
+    filename: 'bundle.[name].js',
   },
   devServer: {
     port: '4000',
