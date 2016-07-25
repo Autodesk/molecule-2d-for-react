@@ -222,7 +222,9 @@ const MolWidget2DView = Backbone.View.extend({
 
     const radius = d3.scale.sqrt().range([0, 6]);
 
-    const svg = d3.select(this.mydiv).append('svg')
+    const svg = d3
+      .select(this.mydiv)
+      .append('svg')
       .attr('width', width)
       .attr('height', height)
       .attr('border', 1);

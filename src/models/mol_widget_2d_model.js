@@ -35,8 +35,8 @@ const MolWidget2DModel = Backbone.Model.extend({
     clicked_atom_index: -1,
     clicked_bond_indices: {},
     _atom_colors: {},
-    width: 0.0,
-    height: 0.0,
+    width: 500.0,
+    height: 500.0,
   },
 });
 
