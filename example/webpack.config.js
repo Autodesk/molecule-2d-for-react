@@ -2,18 +2,17 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    app: ['./src/main.js'],
+    example: ['./example/js/main.js'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: '/js/',
-    filename: 'bundle.js',
-    library: true,
-    libraryTarget: 'commonjs2',
+    filename: 'bundle.[name].js',
   },
-  externals: [
-    /^[a-z\-0-9]+$/,
-  ],
+  devServer: {
+    port: '4000',
+    hot: true,
+  },
   module: {
     loaders: [
       {

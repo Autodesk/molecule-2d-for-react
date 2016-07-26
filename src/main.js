@@ -16,12 +16,11 @@
 
 // Set up jquery for Backbone
 import jquery from 'jquery';
-window.jquery = jquery;
+if (window) {
+  window.jquery = jquery;
+}
 
 import MolWidget2DModel from './models/mol_widget_2d_model';
 import MolWidget2DView from './models/mol_widget_2d_view';
 
-export default {
-  MolWidget2DModel,
-  MolWidget2DView,
-};
+export { MolWidget2DModel, MolWidget2DView };
