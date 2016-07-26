@@ -21,6 +21,6 @@ if (window) {
 }
 
 import MolWidget2DModel from './models/mol_widget_2d_model';
-import MolWidget2DView from './models/mol_widget_2d_view';
+import MolWidget2DView from './views/mol_widget_2d_view';
 
 export { MolWidget2DModel, MolWidget2DView };
