@@ -25,11 +25,13 @@ const MolWidget2DModel = Backbone.Model.extend({
     uuid: '',
     graph: {
       nodes: [
-        { atom: 'C', category: 0, index: 0 },
-        { atom: 'H', category: 1, index: 1 },
+        { atom: 'H', category: 0, index: 0 },
+        { atom: 'H', category: 0, index: 1 },
+        { atom: 'O', category: 1, index: 2 },
       ],
       links: [
-        { source: 0, target: 1, bond: 0, category: 0 },
+        { source: 0, target: 2, bond: 0, category: 0 },
+        { source: 1, target: 2, bond: 0, category: 0 },
       ],
     },
     clicked_atom_index: -1,
