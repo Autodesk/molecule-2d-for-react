@@ -321,7 +321,7 @@ const MolWidget2DView = Backbone.View.extend({
       .filter((d) => d.bond > 1)
       .append('line')
       .attr('class', 'separator')
-      .style('stroke', '#00ff00')
+      .style('stroke', '#FFF')
       .style('stroke-width', whiteWidth);
 
     // triple bonds

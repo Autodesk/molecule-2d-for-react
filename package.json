@@ -33,7 +33,9 @@
   "scripts": {
     "test": "karma start",
     "build": "webpack -p --config webpack.config.js",
-    "serve": "webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors"
+    "watch": "webpack -p --config webpack.config.js --watch",
+    "example": "webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
+    "dev": "npm run watch && npm run example"
   },
   "author": "Autodesk Bio/Nano",
   "license": "Apache 2.0"
