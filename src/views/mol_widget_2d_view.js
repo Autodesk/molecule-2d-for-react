@@ -15,14 +15,7 @@
  */
 import Backbone from 'backbone';
 import d3 from 'd3';
-
-function defaultVal(test, defval) {
-  if (typeof(test) === 'undefined') {
-    return defval;
-  }
-
-  return test;
-}
+import molViewUtils from '../utils/mol_view_utils.js';
 
 const MolWidget2DView = Backbone.View.extend({
 
@@ -33,7 +26,7 @@ const MolWidget2DView = Backbone.View.extend({
     }
   },
 
-  handleFunctionCall: function handleFunctionCall(event) {
+  handleFunctionCall(event) {
     // TODO: handle exceptions
     // console.log('MolViz3DBaseWidget received a function call: '
     //    + event.function_name +'('+ event.arguments+')');
@@ -177,41 +170,11 @@ const MolWidget2DView = Backbone.View.extend({
     }
   },
 
-
   renderViewer() {
     const width = this.width;
     const height = this.height;
-
-    const colorPicker = d3.scale.category20();
-
-    /*
-    function bondClickCallback() { // not hooked up yet
-        mywidget.model.set('clicked_bond_indices',
-            [this.attributes.sourceIndex.value*1,
-                this.attributes.targetIndex.value*1]);
-        mywidget.model.save();
-    }
-    */
-
-    function chooseColor(d, defaultValue) {
-      if (d.category) {
-        return colorPicker(d.category);
-      } else if (d.color) {
-        return d.color;
-      }
-      return defaultValue;
-    }
-
-
-    function bondWidth(d) {
-      return `${d.bond * 4 - 2}px`;
-    }
-
-    function whiteWidth(d) {
-      return `${d.bond * 4 - 5}px`;
-    }
-
     const graph = this.graph;
+
     console.log(JSON.stringify(graph));
     console.log('up8date');
 
@@ -239,8 +202,8 @@ const MolWidget2DView = Backbone.View.extend({
     const force = d3.layout.force()
       .size([width, height])
       .charge(this.charge)
-      .linkDistance((d) => defaultVal(d.distance, 20))
-      .linkStrength((d) => defaultVal(d.strength, 1.0));
+      .linkDistance((d) => molViewUtils.defaultVal(d.distance, 20))
+      .linkStrength((d) => molViewUtils.defaultVal(d.strength, 1.0));
 
     const link = svg.selectAll('.link')
       .data(graph.links)
@@ -260,37 +223,35 @@ const MolWidget2DView = Backbone.View.extend({
         .attr('index', (d) => d.index)
         .call(force.drag);
 
-    function tick() {
-      // keep edges pinned to their nodes
-      link.selectAll('line')
-        .attr('x1', (d) => d.source.x)
-        .attr('y1', (d) => d.source.y)
-        .attr('x2', (d) => d.target.x)
-        .attr('y2', (d) => d.target.y);
-
-      // keep edge labels pinned to the edges
-      link.selectAll('text')
-        .attr('x', (d) =>
-          (d.source.x + d.target.x) / 2.0
-        )
-        .attr('y', (d) =>
-          (d.source.y + d.target.y) / 2.0
-        );
-
-      node.attr('transform', (d) => `translate(${d.x},${d.y})`);
-    }
-
     force
       .nodes(graph.nodes)
       .links(graph.links)
-      .on('tick', tick)
+      .on('tick', () => {
+        // keep edges pinned to their nodes
+        link.selectAll('line')
+          .attr('x1', (d) => d.source.x)
+          .attr('y1', (d) => d.source.y)
+          .attr('x2', (d) => d.target.x)
+          .attr('y2', (d) => d.target.y);
+
+        // keep edge labels pinned to the edges
+        link.selectAll('text')
+          .attr('x', (d) =>
+            (d.source.x + d.target.x) / 2.0
+          )
+          .attr('y', (d) =>
+            (d.source.y + d.target.y) / 2.0
+          );
+
+        node.attr('transform', (d) => `translate(${d.x},${d.y})`);
+      })
       .start();
 
     // all edges (includes both bonds and distance constraints)
     link.append('line')
         .attr('source', (d) => d.source.index)
         .attr('target', (d) => d.target.index)
-        .style('stroke-width', bondWidth)
+        .style('stroke-width', molViewUtils.getBondWidth)
         .style('stroke-dasharray', (d) => {
           if (d.style === 'dashed') {
             return 5;
@@ -298,7 +259,7 @@ const MolWidget2DView = Backbone.View.extend({
 
           return 0;
         })
-        .style('stroke', (d) => chooseColor(d, 'black'))
+        .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
         .style('opacity', (d) => {
           if (d.bond !== 0) {
             return undefined;
@@ -320,27 +281,27 @@ const MolWidget2DView = Backbone.View.extend({
       .append('line')
       .attr('class', 'separator')
       .style('stroke', '#FFF')
-      .style('stroke-width', whiteWidth);
+      .style('stroke-width', (d) => `${d.bond * 4 - 5}px`);
 
     // triple bonds
     link
       .filter((d) => d.bond === 3)
       .append('line')
       .attr('class', 'separator')
-      .style('stroke', (d) => chooseColor(d, 'black'))
-      .style('stroke-width', () => bondWidth(1));
+      .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
+      .style('stroke-width', () => molViewUtils.getBondWidth(1));
 
     // circle for each atom (background color white by default)
     node.append('circle')
-      .attr('r', (d) => radius(defaultVal(d.size, 1.5)))
-      .style('fill', (d) => chooseColor(d, 'white'));
+      .attr('r', (d) => radius(molViewUtils.defaultVal(d.size, 1.5)))
+      .style('fill', (d) => molViewUtils.chooseColor(d, 'white'));
 
     // atom labels
     node.append('text')
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
       .style('color', (d) =>
-        defaultVal(d.textcolor, 'black')
+        molViewUtils.defaultVal(d.textcolor, 'black')
       )
       .text((d) => d.atom);
   },
