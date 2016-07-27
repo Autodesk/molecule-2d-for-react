@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import Backbone from 'backbone';
-const d3 = require('d3');
+import d3 from 'd3';
 
 function defaultVal(test, defval) {
   if (typeof(test) === 'undefined') {
@@ -184,11 +184,6 @@ const MolWidget2DView = Backbone.View.extend({
 
     const colorPicker = d3.scale.category20();
 
-    const mywidget = this;
-    function atomClickCallback() {
-      mywidget.model.set('clicked_atom_index', this.attributes.index.value * 1);
-      mywidget.model.save();
-    }
     /*
     function bondClickCallback() { // not hooked up yet
         mywidget.model.set('clicked_bond_indices',
@@ -257,7 +252,10 @@ const MolWidget2DView = Backbone.View.extend({
         .data(this.graph.nodes)
         .enter()
         .append('g')
-        .on('click', atomClickCallback)
+        .on('click', (clickedNode) => {
+          this.model.set('clicked_atom_index', clickedNode.index * 1);
+          this.model.save();
+        })
         .attr('class', 'node')
         .attr('index', (d) => d.index)
         .call(force.drag);
