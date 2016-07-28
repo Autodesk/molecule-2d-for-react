@@ -202,8 +202,8 @@ const MolWidget2DView = Backbone.View.extend({
     const force = d3.layout.force()
       .size([width, height])
       .charge(this.charge)
-      .linkDistance((d) => molViewUtils.defaultVal(d.distance, 20))
-      .linkStrength((d) => molViewUtils.defaultVal(d.strength, 1.0));
+      .linkDistance((d) => molViewUtils.withDefault(d.distance, 20))
+      .linkStrength((d) => molViewUtils.withDefault(d.strength, 1.0));
 
     const link = svg.selectAll('.link')
       .data(graph.links)
@@ -293,7 +293,7 @@ const MolWidget2DView = Backbone.View.extend({
 
     // circle for each atom (background color white by default)
     node.append('circle')
-      .attr('r', (d) => radius(molViewUtils.defaultVal(d.size, 1.5)))
+      .attr('r', (d) => radius(molViewUtils.withDefault(d.size, 1.5)))
       .style('fill', (d) => molViewUtils.chooseColor(d, 'white'));
 
     // atom labels
@@ -301,7 +301,7 @@ const MolWidget2DView = Backbone.View.extend({
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
       .style('color', (d) =>
-        molViewUtils.defaultVal(d.textcolor, 'black')
+        molViewUtils.withDefault(d.textcolor, 'black')
       )
       .text((d) => d.atom);
   },

@@ -31,15 +31,16 @@ const molViewUtils = {
     if (d.category) {
       const colorPicker = d3.scale.category20();
       return colorPicker(d.category);
-    } else if (d.color) {
+    }
+    if (d.color) {
       return d.color;
     }
     return defaultValue;
   },
 
-  defaultVal(test, defval) {
+  withDefault(test, defaultValue) {
     if (typeof(test) === 'undefined') {
-      return defval;
+      return defaultValue;
     }
 
     return test;
