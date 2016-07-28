@@ -11,7 +11,7 @@ describe('molViewUtils', () => {
       it('throws an error', () => {
         assert.throws(molViewUtils.getBondWidth.bind(null, 'words'));
         assert.throws(molViewUtils.getBondWidth.bind(null, {}));
-        assert.throws(molViewUtils.getBondWidth.bind(null, { bond: 0 }));
+        assert.throws(molViewUtils.getBondWidth.bind(null, { bond: -1 }));
       });
     });
 
