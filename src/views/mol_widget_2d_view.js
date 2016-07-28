@@ -19,6 +19,8 @@ import molViewUtils from '../utils/mol_view_utils.js';
 
 const MolWidget2DView = Backbone.View.extend({
 
+  tagName: 'div',
+
   handleMessage(message) {
     this.messages.push(message);
     if (message.event === 'function_call') {
@@ -43,24 +45,17 @@ const MolWidget2DView = Backbone.View.extend({
   },
 
   render() {
+    // TODO can we remove this?
     document.last_2d_widget = this;
 
     // set properties
-    this.width = this.model.get('width');
-    this.height = this.model.get('height');
-    this.id = this.model.get('uuid');
-    this.charge = this.model.get('charge');
     this.graph = JSON.parse(JSON.stringify(this.model.get('graph')));
 
-    // create the div
-    this.mydiv = document.createElement('div');
-    this.mydiv.id = this.id;
-    this.mydiv.style.width = this.width;
-    this.mydiv.style.height = this.height;
-    this.mydiv.style.position = 'relative';
-
-    // Place it
-    this.$el.append(this.mydiv);
+    // setup the div
+    this.el.id = this.model.get('id');
+    this.el.style.width = this.model.get('width');
+    this.el.style.height = this.model.get('height');
+    this.el.style.position = 'relative';
 
     // render it
     this.setCss();
@@ -104,6 +99,8 @@ const MolWidget2DView = Backbone.View.extend({
     document.getElementsByTagName('head')[0].appendChild(graphStyle);
   },
 
+  /*
+   * TODO these are unused, delete them?
   setAtomStyle(atoms, atomSpec) {
     this.applyStyleSpec(atoms, this.svgNodes, atomSpec);
   },
@@ -149,11 +146,13 @@ const MolWidget2DView = Backbone.View.extend({
       link.children[1].style[st] = spec[st];
     });
   },
+  */
 
   indexSvgElements() {
     this.svgNodes = {};
     this.svgLinks = {};
     const svgElements = this.svg[0][0].children;
+
     for (let i = 0; i < svgElements.length; ++i) {
       const elem = svgElements[i];
       if (elem.getAttribute('class') === 'node') {
@@ -171,8 +170,8 @@ const MolWidget2DView = Backbone.View.extend({
   },
 
   renderViewer() {
-    const width = this.width;
-    const height = this.height;
+    const width = this.model.get('width');
+    const height = this.model.get('height');
     const graph = this.graph;
 
     console.log(JSON.stringify(graph));
@@ -181,7 +180,7 @@ const MolWidget2DView = Backbone.View.extend({
     const radius = d3.scale.sqrt().range([0, 6]);
 
     const svg = d3
-      .select(this.mydiv)
+      .select(this.el)
       .append('svg')
       .attr('width', width)
       .attr('height', height)
@@ -201,7 +200,7 @@ const MolWidget2DView = Backbone.View.extend({
 
     const force = d3.layout.force()
       .size([width, height])
-      .charge(this.charge)
+      .charge(this.model.get('charge'))
       .linkDistance((d) => molViewUtils.withDefault(d.distance, 20))
       .linkStrength((d) => molViewUtils.withDefault(d.strength, 1.0));
 
