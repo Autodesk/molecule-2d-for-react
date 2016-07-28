@@ -17,6 +17,13 @@ import d3 from 'd3';
 
 const molViewUtils = {
   getBondWidth(d) {
+    if (!d || isNaN(parseInt(d.bond, 10))) {
+      throw new Error('Invalid input');
+    }
+    if (d.bond < 0.5) {
+      throw new Error('d.bond must be at least 0.5');
+    }
+
     return `${d.bond * 4 - 2}px`;
   },
 
