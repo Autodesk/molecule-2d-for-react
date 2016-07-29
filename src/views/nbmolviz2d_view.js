@@ -16,10 +16,18 @@
 import Backbone from 'backbone';
 import d3 from 'd3';
 import molViewUtils from '../utils/mol_view_utils.js';
+import AtomsView from '../views/atoms_view';
+import AtomModel from '../models/atom_model';
+
+// TODO make sure root model is in sync with derivatives
 
 const Nbmolviz2dView = Backbone.View.extend({
 
   tagName: 'div',
+
+  initialize() {
+    this.model.on('change', this.render.bind(this));
+  },
 
   handleMessage(message) {
     this.messages.push(message);
@@ -33,6 +41,13 @@ const Nbmolviz2dView = Backbone.View.extend({
     // console.log('MolViz3DBaseWidget received a function call: '
     //    + event.function_name +'('+ event.arguments+')');
     // try {
+
+    // TODO get rid of RPC altogether
+    // For now, ignore this specific one and handle it by listening to the model
+    if (event.function_name === 'updateHighlightAtoms') {
+      return;
+    }
+
     this.messages.push(event);
     const myFunction = this[event.function_name];
     const result = myFunction.apply(this, event.arguments);
@@ -177,7 +192,7 @@ const Nbmolviz2dView = Backbone.View.extend({
     console.log(JSON.stringify(graph));
     console.log('up8date');
 
-    const radius = d3.scale.sqrt().range([0, 6]);
+    d3.select('svg').remove();
 
     const svg = d3
       .select(this.el)
@@ -210,17 +225,15 @@ const Nbmolviz2dView = Backbone.View.extend({
       .append('g')
       .attr('class', 'link');
 
-    const node = svg.selectAll('.node')
-        .data(this.graph.nodes)
-        .enter()
-        .append('g')
-        .on('click', (clickedNode) => {
-          this.model.set('clicked_atom_index', clickedNode.index * 1);
-          this.model.save();
-        })
-        .attr('class', 'node')
-        .attr('index', (d) => d.index)
-        .call(force.drag);
+    const atomsView = new AtomsView({
+      model: new AtomModel({
+        nodes: this.graph.nodes,
+        clicked_atom_index: this.model.get('clicked_atom_index'),
+      }),
+      svg,
+      force,
+    });
+    atomsView.render();
 
     force
       .nodes(graph.nodes)
@@ -242,7 +255,7 @@ const Nbmolviz2dView = Backbone.View.extend({
             (d.source.y + d.target.y) / 2.0
           );
 
-        node.attr('transform', (d) => `translate(${d.x},${d.y})`);
+        atomsView.renderTransform();
       })
       .start();
 
@@ -289,20 +302,6 @@ const Nbmolviz2dView = Backbone.View.extend({
       .attr('class', 'separator')
       .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
       .style('stroke-width', () => molViewUtils.getBondWidth(1));
-
-    // circle for each atom (background color white by default)
-    node.append('circle')
-      .attr('r', (d) => radius(molViewUtils.withDefault(d.size, 1.5)))
-      .style('fill', (d) => molViewUtils.chooseColor(d, 'white'));
-
-    // atom labels
-    node.append('text')
-      .attr('dy', '.35em')
-      .attr('text-anchor', 'middle')
-      .style('color', (d) =>
-        molViewUtils.withDefault(d.textcolor, 'black')
-      )
-      .text((d) => d.atom);
   },
 });
 
