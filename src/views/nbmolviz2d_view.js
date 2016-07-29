@@ -91,17 +91,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     console.log(`${this.viewerId} is ready`);
   },
 
-  updateHighlightAtoms(atoms) {
-    const svgAtoms = this.svgNodes;
-    this.highlightedAtoms.forEach((x) => {
-      svgAtoms[x].style.stroke = null;
-    });
-    this.highlightedAtoms = atoms;
-    atoms.forEach((x) => {
-      svgAtoms[x].style.stroke = '#39F8FF';
-    });
-  },
-
   setCss() {
     if (document.querySelectorAll('#graph_css_style').length > 0) {
       return;
@@ -116,8 +105,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     document.getElementsByTagName('head')[0].appendChild(graphStyle);
   },
 
-  /*
-   * TODO these are unused, delete them?
   setAtomStyle(atoms, atomSpec) {
     this.applyStyleSpec(atoms, this.svgNodes, atomSpec);
   },
@@ -163,7 +150,6 @@ const Nbmolviz2dView = Backbone.View.extend({
       link.children[1].style[st] = spec[st];
     });
   },
-  */
 
   indexSvgElements() {
     this.svgNodes = {};
