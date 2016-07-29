@@ -4,7 +4,7 @@ import molViewUtils from '../utils/mol_view_utils';
 
 const SELECTED_COLOR = '#39f8ff';
 
-const AtomsView = Backbone.View.extend({
+const NodesView = Backbone.View.extend({
   initialize(options) {
     this.svg = options.svg;
     this.force = options.force;
@@ -17,20 +17,20 @@ const AtomsView = Backbone.View.extend({
   },
 
   render() {
-    const node = this.svg
+    const nodes = this.svg
       .selectAll('.node')
       .data(this.model.get('nodes'), (d) => d.index);
 
     // Clear everything inside the groups so it can be redrawn
-    node.selectAll('*').remove();
+    nodes.selectAll('*').remove();
 
-    node.enter()
+    nodes.enter()
       .append('g')
       .on('click', this.onClick.bind(this));
 
     const clickedAtomIndex = this.model.get('clicked_atom_index');
 
-    node
+    nodes
       .attr('class', (d) => {
         const selectedClass = d.index === clickedAtomIndex ? 'selected' : '';
         return `node ${selectedClass}`;
@@ -41,7 +41,7 @@ const AtomsView = Backbone.View.extend({
     const radius = d3.scale.sqrt().range([0, 6]);
 
     // circle for each atom (background color white by default)
-    node.append('circle')
+    nodes.append('circle')
       .attr('class', 'atom-circle')
       .attr('r', (d) => radius(molViewUtils.withDefault(d.size, 1.5)))
       .style('fill', (d) => molViewUtils.chooseColor(d, 'white'))
@@ -50,7 +50,7 @@ const AtomsView = Backbone.View.extend({
       );
 
     // atom labels
-    node.append('text')
+    nodes.append('text')
       .attr('class', 'atom-label')
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
@@ -60,7 +60,7 @@ const AtomsView = Backbone.View.extend({
       })
       .text((d) => d.atom);
 
-    node.attr('transform', (d) =>
+    nodes.attr('transform', (d) =>
       `translate(${d.x || 0},${d.y || 0})`
     );
 
@@ -77,4 +77,4 @@ const AtomsView = Backbone.View.extend({
   },
 });
 
-export default AtomsView;
+export default NodesView;

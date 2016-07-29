@@ -16,8 +16,10 @@
 import Backbone from 'backbone';
 import d3 from 'd3';
 import molViewUtils from '../utils/mol_view_utils.js';
-import AtomsView from '../views/atoms_view';
-import AtomModel from '../models/atom_model';
+import NodesView from '../views/nodes_view';
+import NodesModel from '../models/nodes_model';
+import LinksModel from '../models/links_model';
+import LinksView from '../views/links_view';
 
 // TODO make sure root model is in sync with derivatives
 
@@ -219,89 +221,32 @@ const Nbmolviz2dView = Backbone.View.extend({
       .linkDistance((d) => molViewUtils.withDefault(d.distance, 20))
       .linkStrength((d) => molViewUtils.withDefault(d.strength, 1.0));
 
-    const link = svg.selectAll('.link')
-      .data(graph.links)
-      .enter()
-      .append('g')
-      .attr('class', 'link');
+    const linksView = new LinksView({
+      model: new LinksModel({
+        links: this.graph.links,
+      }),
+      svg,
+    });
+    linksView.render();
 
-    const atomsView = new AtomsView({
-      model: new AtomModel({
+    const nodesView = new NodesView({
+      model: new NodesModel({
         nodes: this.graph.nodes,
         clicked_atom_index: this.model.get('clicked_atom_index'),
       }),
       svg,
       force,
     });
-    atomsView.render();
+    nodesView.render();
 
     force
       .nodes(graph.nodes)
       .links(graph.links)
       .on('tick', () => {
-        // keep edges pinned to their nodes
-        link.selectAll('line')
-          .attr('x1', (d) => d.source.x)
-          .attr('y1', (d) => d.source.y)
-          .attr('x2', (d) => d.target.x)
-          .attr('y2', (d) => d.target.y);
-
-        // keep edge labels pinned to the edges
-        link.selectAll('text')
-          .attr('x', (d) =>
-            (d.source.x + d.target.x) / 2.0
-          )
-          .attr('y', (d) =>
-            (d.source.y + d.target.y) / 2.0
-          );
-
-        atomsView.renderTransform();
+        linksView.renderPosition();
+        nodesView.renderTransform();
       })
       .start();
-
-    // all edges (includes both bonds and distance constraints)
-    link.append('line')
-        .attr('source', (d) => d.source.index)
-        .attr('target', (d) => d.target.index)
-        .style('stroke-width', molViewUtils.getBondWidth)
-        .style('stroke-dasharray', (d) => {
-          if (d.style === 'dashed') {
-            return 5;
-          }
-
-          return 0;
-        })
-        .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
-        .style('opacity', (d) => {
-          if (d.bond !== 0) {
-            return undefined;
-          }
-          return 0.0;
-        });
-
-
-    // text placeholders for all edges
-    link.append('text')
-        .attr('x', (d) => d.source.x)
-        .attr('y', (d) => d.source.y)
-        .attr('text-anchor', 'middle')
-        .text(() => ' ');
-
-    // double and triple bonds
-    link
-      .filter((d) => d.bond > 1)
-      .append('line')
-      .attr('class', 'separator')
-      .style('stroke', '#FFF')
-      .style('stroke-width', (d) => `${d.bond * 4 - 5}px`);
-
-    // triple bonds
-    link
-      .filter((d) => d.bond === 3)
-      .append('line')
-      .attr('class', 'separator')
-      .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
-      .style('stroke-width', () => molViewUtils.getBondWidth(1));
   },
 });
 
