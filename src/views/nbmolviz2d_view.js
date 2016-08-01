@@ -180,15 +180,16 @@ const Nbmolviz2dView = Backbone.View.extend({
     console.log(JSON.stringify(graph));
     console.log('up8date');
 
-    d3.select('svg').remove();
+    if (this.el.querySelectorAll('svg').length) {
+      this.svg = d3.select(this.el).select('svg');
+    } else {
+      this.svg = d3.select(this.el).append('svg');
+    }
 
-    const svg = d3
-      .select(this.el)
-      .append('svg')
+    this.svg
       .attr('width', width)
       .attr('height', height)
       .attr('border', 1);
-    this.svg = svg;
 
     /*
     const borderPath = svg.append('rect')
@@ -211,16 +212,24 @@ const Nbmolviz2dView = Backbone.View.extend({
       model: new LinksModel({
         links: this.graph.links,
       }),
-      svg,
+      svg: this.svg,
     });
     linksView.render();
 
+    const nodesModel = new NodesModel({
+      nodes: this.graph.nodes,
+      clicked_atom_index: this.model.get('clicked_atom_index'),
+    });
+
+    // TODO ideally we shouldn't duplicate data and keep it in sync, but I'm
+    // afraid to touch the root model for now
+    nodesModel.on('change:clicked_atom_index', () => {
+      this.model.set('clicked_atom_index', nodesModel.get('clicked_atom_index'));
+    });
+
     const nodesView = new NodesView({
-      model: new NodesModel({
-        nodes: this.graph.nodes,
-        clicked_atom_index: this.model.get('clicked_atom_index'),
-      }),
-      svg,
+      model: nodesModel,
+      svg: this.svg,
       force,
     });
     nodesView.render();

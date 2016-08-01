@@ -11,15 +11,13 @@ const LinksView = Backbone.View.extend({
       .selectAll('.link')
       .data(this.model.get('links'));
 
-    links.selectAll('*').remove();
-
-    links.enter()
-      .append('g');
-
-    links.attr('class', 'link');
+    const newLinksG = links.enter()
+      .append('g')
+      .attr('class', 'link');
 
     // all edges (includes both bonds and distance constraints)
-    links.append('line')
+    newLinksG
+      .append('line')
       .attr('source', (d) => d.source.index)
       .attr('target', (d) => d.target.index)
       .style('stroke-width', molViewUtils.getBondWidth)
@@ -39,14 +37,15 @@ const LinksView = Backbone.View.extend({
       });
 
     // text placeholders for all edges
-    links.append('text')
-        .attr('x', (d) => d.source.x)
-        .attr('y', (d) => d.source.y)
-        .attr('text-anchor', 'middle')
-        .text(() => ' ');
+    newLinksG
+      .append('text')
+      .attr('x', (d) => d.source.x)
+      .attr('y', (d) => d.source.y)
+      .attr('text-anchor', 'middle')
+      .text(() => ' ');
 
     // double and triple bonds
-    links
+    newLinksG
       .filter((d) => d.bond > 1)
       .append('line')
       .attr('class', 'separator')
@@ -54,7 +53,7 @@ const LinksView = Backbone.View.extend({
       .style('stroke-width', (d) => `${d.bond * 4 - 5}px`);
 
     // triple bonds
-    links
+    newLinksG
       .filter((d) => d.bond === 3)
       .append('line')
       .attr('class', 'separator')
