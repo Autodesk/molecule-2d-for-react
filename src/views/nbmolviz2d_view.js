@@ -225,6 +225,7 @@ const Nbmolviz2dView = Backbone.View.extend({
     // afraid to touch the root model for now
     nodesModel.on('change:clicked_atom_index', () => {
       this.model.set('clicked_atom_index', nodesModel.get('clicked_atom_index'));
+      this.model.save();
     });
 
     const nodesView = new NodesView({
