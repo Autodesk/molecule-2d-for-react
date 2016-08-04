@@ -1,6 +1,6 @@
 {
   "name": "nbmolviz2d",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "2D molecule visualization",
   "main": "dist/bundle.js",
   "keywords": [
@@ -42,7 +42,7 @@
     "build": "webpack -p --config webpack.config.js",
     "watch": "webpack -p --config webpack.config.js --watch",
     "example": "webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
-    "postinstall": "npm run build"
+    "prepublish": "npm run build"
   },
   "author": "Autodesk Bio/Nano",
   "license": "Apache 2.0",
