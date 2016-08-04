@@ -15,10 +15,10 @@
  */
 import Backbone from 'backbone';
 
-const MolWidget2DModel = Backbone.Model.extend({
+const Nbmolviz2dModel = Backbone.Model.extend({
   defaults: {
-    _model_name: 'MolWidget2DModel',
-    _view_name: 'MolWidget2DView',
+    _model_name: 'Nbmolviz2dModel',
+    _view_name: 'Nbmolviz2dView',
     _model_module: 'nbmolviz-js',
     _view_module: 'nbmolviz-js',
     charge: 0.0,
@@ -42,4 +42,4 @@ const MolWidget2DModel = Backbone.Model.extend({
   },
 });
 
-export default MolWidget2DModel;
+export default Nbmolviz2dModel;

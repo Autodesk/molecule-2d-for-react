@@ -17,7 +17,7 @@ import Backbone from 'backbone';
 import d3 from 'd3';
 import molViewUtils from '../utils/mol_view_utils.js';
 
-const MolWidget2DView = Backbone.View.extend({
+const Nbmolviz2dView = Backbone.View.extend({
 
   tagName: 'div',
 
@@ -306,4 +306,4 @@ const MolWidget2DView = Backbone.View.extend({
   },
 });
 
-export default MolWidget2DView;
+export default Nbmolviz2dView;
