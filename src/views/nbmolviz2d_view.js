@@ -16,10 +16,20 @@
 import Backbone from 'backbone';
 import d3 from 'd3';
 import molViewUtils from '../utils/mol_view_utils.js';
+import NodesView from '../views/nodes_view';
+import NodesModel from '../models/nodes_model';
+import LinksModel from '../models/links_model';
+import LinksView from '../views/links_view';
+
+// TODO make sure root model is in sync with derivatives
 
 const Nbmolviz2dView = Backbone.View.extend({
 
   tagName: 'div',
+
+  initialize() {
+    this.model.on('change', this.render.bind(this));
+  },
 
   handleMessage(message) {
     this.messages.push(message);
@@ -33,6 +43,13 @@ const Nbmolviz2dView = Backbone.View.extend({
     // console.log('MolViz3DBaseWidget received a function call: '
     //    + event.function_name +'('+ event.arguments+')');
     // try {
+
+    // TODO get rid of RPC altogether
+    // For now, ignore this specific one and handle it by listening to the model
+    if (event.function_name === 'updateHighlightAtoms') {
+      return;
+    }
+
     this.messages.push(event);
     const myFunction = this[event.function_name];
     const result = myFunction.apply(this, event.arguments);
@@ -74,17 +91,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     console.log(`${this.viewerId} is ready`);
   },
 
-  updateHighlightAtoms(atoms) {
-    const svgAtoms = this.svgNodes;
-    this.highlightedAtoms.forEach((x) => {
-      svgAtoms[x].style.stroke = null;
-    });
-    this.highlightedAtoms = atoms;
-    atoms.forEach((x) => {
-      svgAtoms[x].style.stroke = '#39F8FF';
-    });
-  },
-
   setCss() {
     if (document.querySelectorAll('#graph_css_style').length > 0) {
       return;
@@ -99,8 +105,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     document.getElementsByTagName('head')[0].appendChild(graphStyle);
   },
 
-  /*
-   * TODO these are unused, delete them?
   setAtomStyle(atoms, atomSpec) {
     this.applyStyleSpec(atoms, this.svgNodes, atomSpec);
   },
@@ -146,7 +150,6 @@ const Nbmolviz2dView = Backbone.View.extend({
       link.children[1].style[st] = spec[st];
     });
   },
-  */
 
   indexSvgElements() {
     this.svgNodes = {};
@@ -177,15 +180,16 @@ const Nbmolviz2dView = Backbone.View.extend({
     console.log(JSON.stringify(graph));
     console.log('up8date');
 
-    const radius = d3.scale.sqrt().range([0, 6]);
+    if (this.el.querySelectorAll('svg').length) {
+      this.svg = d3.select(this.el).select('svg');
+    } else {
+      this.svg = d3.select(this.el).append('svg');
+    }
 
-    const svg = d3
-      .select(this.el)
-      .append('svg')
+    this.svg
       .attr('width', width)
       .attr('height', height)
       .attr('border', 1);
-    this.svg = svg;
 
     /*
     const borderPath = svg.append('rect')
@@ -204,105 +208,41 @@ const Nbmolviz2dView = Backbone.View.extend({
       .linkDistance((d) => molViewUtils.withDefault(d.distance, 20))
       .linkStrength((d) => molViewUtils.withDefault(d.strength, 1.0));
 
-    const link = svg.selectAll('.link')
-      .data(graph.links)
-      .enter()
-      .append('g')
-      .attr('class', 'link');
+    const linksView = new LinksView({
+      model: new LinksModel({
+        links: this.graph.links,
+      }),
+      svg: this.svg,
+    });
+    linksView.render();
 
-    const node = svg.selectAll('.node')
-        .data(this.graph.nodes)
-        .enter()
-        .append('g')
-        .on('click', (clickedNode) => {
-          this.model.set('clicked_atom_index', clickedNode.index * 1);
-          this.model.save();
-        })
-        .attr('class', 'node')
-        .attr('index', (d) => d.index)
-        .call(force.drag);
+    const nodesModel = new NodesModel({
+      nodes: this.graph.nodes,
+      clicked_atom_index: this.model.get('clicked_atom_index'),
+    });
+
+    // TODO ideally we shouldn't duplicate data and keep it in sync, but I'm
+    // afraid to touch the root model for now
+    nodesModel.on('change:clicked_atom_index', () => {
+      this.model.set('clicked_atom_index', nodesModel.get('clicked_atom_index'));
+      this.model.save();
+    });
+
+    const nodesView = new NodesView({
+      model: nodesModel,
+      svg: this.svg,
+      force,
+    });
+    nodesView.render();
 
     force
       .nodes(graph.nodes)
       .links(graph.links)
       .on('tick', () => {
-        // keep edges pinned to their nodes
-        link.selectAll('line')
-          .attr('x1', (d) => d.source.x)
-          .attr('y1', (d) => d.source.y)
-          .attr('x2', (d) => d.target.x)
-          .attr('y2', (d) => d.target.y);
-
-        // keep edge labels pinned to the edges
-        link.selectAll('text')
-          .attr('x', (d) =>
-            (d.source.x + d.target.x) / 2.0
-          )
-          .attr('y', (d) =>
-            (d.source.y + d.target.y) / 2.0
-          );
-
-        node.attr('transform', (d) => `translate(${d.x},${d.y})`);
+        linksView.renderPosition();
+        nodesView.renderTransform();
       })
       .start();
-
-    // all edges (includes both bonds and distance constraints)
-    link.append('line')
-        .attr('source', (d) => d.source.index)
-        .attr('target', (d) => d.target.index)
-        .style('stroke-width', molViewUtils.getBondWidth)
-        .style('stroke-dasharray', (d) => {
-          if (d.style === 'dashed') {
-            return 5;
-          }
-
-          return 0;
-        })
-        .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
-        .style('opacity', (d) => {
-          if (d.bond !== 0) {
-            return undefined;
-          }
-          return 0.0;
-        });
-
-
-    // text placeholders for all edges
-    link.append('text')
-        .attr('x', (d) => d.source.x)
-        .attr('y', (d) => d.source.y)
-        .attr('text-anchor', 'middle')
-        .text(() => ' ');
-
-    // double and triple bonds
-    link
-      .filter((d) => d.bond > 1)
-      .append('line')
-      .attr('class', 'separator')
-      .style('stroke', '#FFF')
-      .style('stroke-width', (d) => `${d.bond * 4 - 5}px`);
-
-    // triple bonds
-    link
-      .filter((d) => d.bond === 3)
-      .append('line')
-      .attr('class', 'separator')
-      .style('stroke', (d) => molViewUtils.chooseColor(d, 'black'))
-      .style('stroke-width', () => molViewUtils.getBondWidth(1));
-
-    // circle for each atom (background color white by default)
-    node.append('circle')
-      .attr('r', (d) => radius(molViewUtils.withDefault(d.size, 1.5)))
-      .style('fill', (d) => molViewUtils.chooseColor(d, 'white'));
-
-    // atom labels
-    node.append('text')
-      .attr('dy', '.35em')
-      .attr('text-anchor', 'middle')
-      .style('color', (d) =>
-        molViewUtils.withDefault(d.textcolor, 'black')
-      )
-      .text((d) => d.atom);
   },
 });
 
