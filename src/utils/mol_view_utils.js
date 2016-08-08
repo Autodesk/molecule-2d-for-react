@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import d3 from 'd3';
 
 const molViewUtils = {
   getBondWidth(d) {
@@ -28,12 +27,9 @@ const molViewUtils = {
   },
 
   chooseColor(d, defaultValue) {
-    if (d.category) {
-      const colorPicker = d3.scale.category20();
-      return colorPicker(d.category);
-    }
-    if (d.color) {
-      return d.color;
+    const color = d.category || d.color;
+    if (color) {
+      return color;
     }
     return defaultValue;
   },

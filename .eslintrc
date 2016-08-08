@@ -1,6 +1,9 @@
 {
   "extends": "airbnb",
   "rules": {
+    // These rules are violated by normal d3 usage
+    "no-underscore-dangle": 0,
+    "no-param-reassign": 0,
     "react/jsx-no-bind": 0,
   },
 }
