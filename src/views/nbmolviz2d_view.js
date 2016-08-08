@@ -25,6 +25,7 @@ import NodesView from '../views/nodes_view';
 import NodesModel from '../models/nodes_model';
 import LinksModel from '../models/links_model';
 import LinksView from '../views/links_view';
+import molViewUtils from '../utils/mol_view_utils';
 
 // TODO make sure root model is in sync with derivatives
 
@@ -191,20 +192,12 @@ const Nbmolviz2dView = Backbone.View.extend({
       .attr('height', height)
       .attr('border', 1);
 
-    /*
     const simulation = forceSimulation()
       .force('link', forceLink()
-        .id((d) => d.id)
+        .id((d) => d.index)
         .distance((d) => molViewUtils.withDefault(d.distance, 20))
         .strength((d) => molViewUtils.withDefault(d.strength, 1.0))
       )
-      // .force('charge', d3.forceCollide())
-      .force('charge', forceManyBody())
-      .force('center', forceCenter(width / 2, height / 2));
-    */
-
-    const simulation = forceSimulation()
-      .force('link', forceLink().id((d) => d.index))
       .force('charge', forceManyBody())
       .force('center', forceCenter(width / 2, height / 2));
 
