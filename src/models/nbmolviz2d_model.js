@@ -25,9 +25,9 @@ const Nbmolviz2dModel = Backbone.Model.extend({
     uuid: '',
     graph: {
       nodes: [
-        { atom: 'H', category: 0, index: 0 },
-        { atom: 'H', category: 0, index: 1 },
-        { atom: 'O', category: 1, index: 2 },
+        { atom: 'H', category: 'dodgerblue', index: 0, id: 0 },
+        { atom: 'H', category: 'dodgerblue', index: 1, id: 1 },
+        { atom: 'O', category: 'tomato', index: 2, id: 2 },
       ],
       links: [
         { source: 0, target: 2, bond: 1, category: 0 },

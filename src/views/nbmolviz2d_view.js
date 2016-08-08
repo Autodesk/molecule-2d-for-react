@@ -14,12 +14,18 @@
  * limitations under the License.
  */
 import Backbone from 'backbone';
-import d3 from 'd3';
-import molViewUtils from '../utils/mol_view_utils.js';
+import {
+  select,
+  forceSimulation,
+  forceLink,
+  forceManyBody,
+  forceCenter,
+} from 'd3';
 import NodesView from '../views/nodes_view';
 import NodesModel from '../models/nodes_model';
 import LinksModel from '../models/links_model';
 import LinksView from '../views/links_view';
+import molViewUtils from '../utils/mol_view_utils';
 
 // TODO make sure root model is in sync with derivatives
 
@@ -88,7 +94,7 @@ const Nbmolviz2dView = Backbone.View.extend({
       this.send({ event: 'ready' });
     }
 
-    console.log(`${this.viewerId} is ready`);
+    // console.log(`${this.viewerId} is ready`);
   },
 
   setCss() {
@@ -118,8 +124,7 @@ const Nbmolviz2dView = Backbone.View.extend({
     objs.forEach((o) => {
       const obj = objLookup[o];
       if (typeof(obj) === 'undefined') {
-        console.log(`no object ${o}`);
-        return;
+        throw new Error(`no object ${o}`);
       }
       Object.keys(spec).forEach((st) => {
         obj.children[0].style[st] = spec[st];
@@ -140,7 +145,7 @@ const Nbmolviz2dView = Backbone.View.extend({
   setBondLabel(bond, text, spec) {
     const link = this.svgLinks[bond];
     if (typeof(link) === 'undefined') {
-      console.log(`No bond ${bond}`);
+      // console.log(`No bond ${bond}`);
       return;
     }
     if (typeof(text) !== 'undefined') {
@@ -154,7 +159,7 @@ const Nbmolviz2dView = Backbone.View.extend({
   indexSvgElements() {
     this.svgNodes = {};
     this.svgLinks = {};
-    const svgElements = this.svg[0][0].children;
+    const svgElements = this.svg._groups[0][0].children;
 
     for (let i = 0; i < svgElements.length; ++i) {
       const elem = svgElements[i];
@@ -175,15 +180,11 @@ const Nbmolviz2dView = Backbone.View.extend({
   renderViewer() {
     const width = this.model.get('width');
     const height = this.model.get('height');
-    const graph = this.graph;
-
-    console.log(JSON.stringify(graph));
-    console.log('up8date');
 
     if (this.el.querySelectorAll('svg').length) {
-      this.svg = d3.select(this.el).select('svg');
+      this.svg = select(this.el).select('svg');
     } else {
-      this.svg = d3.select(this.el).append('svg');
+      this.svg = select(this.el).append('svg');
     }
 
     this.svg
@@ -191,22 +192,14 @@ const Nbmolviz2dView = Backbone.View.extend({
       .attr('height', height)
       .attr('border', 1);
 
-    /*
-    const borderPath = svg.append('rect')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('height', height)
-        .attr('width', width)
-        .style('stroke', 'black')
-        .style('fill', 'none')
-        .style('stroke-width', 1);
-    */
-
-    const force = d3.layout.force()
-      .size([width, height])
-      .charge(this.model.get('charge'))
-      .linkDistance((d) => molViewUtils.withDefault(d.distance, 20))
-      .linkStrength((d) => molViewUtils.withDefault(d.strength, 1.0));
+    const simulation = forceSimulation()
+      .force('link', forceLink()
+        .id((d) => d.index)
+        .distance((d) => molViewUtils.withDefault(d.distance, 20))
+        .strength((d) => molViewUtils.withDefault(d.strength, 1.0))
+      )
+      .force('charge', forceManyBody())
+      .force('center', forceCenter(width / 2, height / 2));
 
     const linksView = new LinksView({
       model: new LinksModel({
@@ -231,18 +224,21 @@ const Nbmolviz2dView = Backbone.View.extend({
     const nodesView = new NodesView({
       model: nodesModel,
       svg: this.svg,
-      force,
+      simulation,
     });
     nodesView.render();
 
-    force
-      .nodes(graph.nodes)
-      .links(graph.links)
-      .on('tick', () => {
-        linksView.renderPosition();
-        nodesView.renderTransform();
-      })
-      .start();
+    function ticked() {
+      nodesView.renderTransform();
+      linksView.renderPosition();
+    }
+
+    simulation
+        .nodes(this.graph.nodes)
+        .on('tick', ticked);
+
+    simulation.force('link')
+        .links(this.graph.links);
   },
 });
 
