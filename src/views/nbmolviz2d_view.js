@@ -211,13 +211,13 @@ const Nbmolviz2dView = Backbone.View.extend({
 
     const nodesModel = new NodesModel({
       nodes: this.graph.nodes,
-      clicked_atom_index: this.model.get('clicked_atom_index'),
+      selected_atom_indices: this.model.get('selected_atom_indices'),
     });
 
     // TODO ideally we shouldn't duplicate data and keep it in sync, but I'm
     // afraid to touch the root model for now
-    nodesModel.on('change:clicked_atom_index', () => {
-      this.model.set('clicked_atom_index', nodesModel.get('clicked_atom_index'));
+    nodesModel.on('change:selected_atom_indices', () => {
+      this.model.set('selected_atom_indices', nodesModel.get('selected_atom_indices'));
       this.model.save();
     });
 

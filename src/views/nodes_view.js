@@ -16,7 +16,16 @@ const NodesView = Backbone.View.extend({
   },
 
   onClick(node) {
-    this.model.set('clicked_atom_index', node.index * 1);
+    const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
+    const index = selectedAtomIndices.indexOf(node.index);
+
+    if (index !== -1) {
+      selectedAtomIndices.splice(index, 1);
+    } else {
+      selectedAtomIndices.push(node.index);
+    }
+
+    this.model.set('selected_atom_indices', selectedAtomIndices);
     this.model.save();
   },
 
@@ -54,7 +63,7 @@ const NodesView = Backbone.View.extend({
       .attr('class', 'node')
       .on('click', this.onClick.bind(this));
 
-    const clickedAtomIndex = this.model.get('clicked_atom_index');
+    const selectedAtoms = this.model.get('selected_atom_indices');
 
     newNodesG
       .attr('index', (d) => d.index)
@@ -66,7 +75,7 @@ const NodesView = Backbone.View.extend({
 
     this.svg.selectAll('.node')
       .classed('selected', (d) =>
-        (d.index === clickedAtomIndex ? SELECTED_COLOR : '')
+        (selectedAtoms.indexOf(d.index) === -1 ? '' : SELECTED_COLOR)
     );
 
     const radius = scaleSqrt().range([0, 6]);
@@ -78,7 +87,7 @@ const NodesView = Backbone.View.extend({
       .style('fill', (d) => molViewUtils.chooseColor(d, 'white'));
     this.svg.selectAll('.atom-circle')
       .style('stroke', (d) =>
-        (d.index === clickedAtomIndex ? SELECTED_COLOR : '')
+        (selectedAtoms.indexOf(d.index) === -1 ? '' : SELECTED_COLOR)
       );
 
     // atom labels
@@ -89,7 +98,7 @@ const NodesView = Backbone.View.extend({
       .text((d) => d.atom);
     this.svg.selectAll('.atom-label')
       .attr('fill', (d) => {
-        const color = d.index === clickedAtomIndex ? SELECTED_COLOR : '#000000';
+        const color = (selectedAtoms.indexOf(d.index) === -1 ? '#000000' : SELECTED_COLOR);
         return molViewUtils.withDefault(d.textcolor, color);
       });
 
