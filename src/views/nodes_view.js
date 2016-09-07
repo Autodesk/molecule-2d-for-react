@@ -15,20 +15,6 @@ const NodesView = Backbone.View.extend({
     this.model.on('change', this.render.bind(this));
   },
 
-  onClick(node) {
-    const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
-    const index = selectedAtomIndices.indexOf(node.index);
-
-    if (index !== -1) {
-      selectedAtomIndices.splice(index, 1);
-    } else {
-      selectedAtomIndices.push(node.index);
-    }
-
-    this.model.set('selected_atom_indices', selectedAtomIndices);
-    this.model.save();
-  },
-
   dragstarted(d) {
     if (!d3Event.active) this.simulation.alphaTarget(0.3).restart();
     d.fx = d.x;
@@ -61,7 +47,7 @@ const NodesView = Backbone.View.extend({
     const newNodesG = nodes.enter()
       .append('g')
       .attr('class', 'node')
-      .on('click', this.onClick.bind(this));
+      .on('click', this.onClickNode);
 
     const selectedAtoms = this.model.get('selected_atom_indices');
 

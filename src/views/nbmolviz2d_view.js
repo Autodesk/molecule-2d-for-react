@@ -213,12 +213,8 @@ const Nbmolviz2dView = Backbone.View.extend({
       nodes: this.graph.nodes,
       selected_atom_indices: this.model.get('selected_atom_indices'),
     });
-
-    // TODO ideally we shouldn't duplicate data and keep it in sync, but I'm
-    // afraid to touch the root model for now
-    nodesModel.on('change:selected_atom_indices', () => {
-      this.model.set('selected_atom_indices', nodesModel.get('selected_atom_indices'));
-      this.model.save();
+    this.model.on('change:selected_atom_indices', () => {
+      nodesModel.set('selected_atom_indices', this.model.get('selected_atom_indices'));
     });
 
     const nodesView = new NodesView({
@@ -226,6 +222,19 @@ const Nbmolviz2dView = Backbone.View.extend({
       svg: this.svg,
       simulation,
     });
+    nodesView.onClickNode = (node) => {
+      const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
+      const index = selectedAtomIndices.indexOf(node.index);
+
+      if (index !== -1) {
+        selectedAtomIndices.splice(index, 1);
+      } else {
+        selectedAtomIndices.push(node.index);
+      }
+
+      this.model.set('selected_atom_indices', selectedAtomIndices);
+      this.model.save();
+    };
     nodesView.render();
 
     function ticked() {
