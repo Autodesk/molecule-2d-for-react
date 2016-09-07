@@ -32,12 +32,7 @@ describe('molViewUtils', () => {
 
     describe('when d has a category', () => {
       beforeEach(() => {
-        d.category = 1;
-        sinon.stub(d3.scale, 'category20').returns(() => color);
-      });
-
-      afterEach(() => {
-        sinon.restore(d3.scale, 'category20');
+        d.category = color;
       });
 
       it('chooses the corresponding color from d3\'s color palette', () => {
