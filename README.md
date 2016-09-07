@@ -21,6 +21,32 @@ nbmolviz2d is a Backbone module, so you can use it like this:
 
 See example/js/main.js for a working example.
 
+## API
+In order to set up your molecule visualization, just pass in the proper data to MolWidget2DModel. Here are all of the parameters with explanations:
+
+### graph {Object} [H2O]
+An object indicating the atoms and bonds to display.  Of the form:
+
+    {
+      nodes: [
+        { atom: 'H', category: 'blue', index: 0, id: 0 },
+        ...
+      ],
+      links: [
+        { source: 0, target: 2, bond: 1, category: 0 },
+        ...
+      ],
+    }
+
+### selected_atom_indices {Array of Numbers} [[]]
+An array of atom indices to display as selected.  This will also update whenever the user clicks on an atom.
+
+### width {Number} [500]
+The width of the SVG element.
+
+### height {Number} [500]
+The height of the SVG element.
+
 ## Development
 A typical development flow might be to run the example while editing the code, where you'll want any changes to be immediately reflected in the example running in the browser.  In that case you should run:
 
