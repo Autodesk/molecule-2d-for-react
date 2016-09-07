@@ -67,6 +67,20 @@ const Nbmolviz2dView = Backbone.View.extend({
     });
   },
 
+  onClickNode(node) {
+    const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
+    const index = selectedAtomIndices.indexOf(node.index);
+
+    if (index !== -1) {
+      selectedAtomIndices.splice(index, 1);
+    } else {
+      selectedAtomIndices.push(node.index);
+    }
+
+    this.model.set('selected_atom_indices', selectedAtomIndices);
+    this.model.save();
+  },
+
   render() {
     // TODO can we remove this?
     document.last_2d_widget = this;
@@ -201,13 +215,13 @@ const Nbmolviz2dView = Backbone.View.extend({
       .force('charge', forceManyBody())
       .force('center', forceCenter(width / 2, height / 2));
 
-    const linksView = new LinksView({
+    this.linksView = new LinksView({
       model: new LinksModel({
         links: this.graph.links,
       }),
       svg: this.svg,
     });
-    linksView.render();
+    this.linksView.render();
 
     const nodesModel = new NodesModel({
       nodes: this.graph.nodes,
@@ -217,34 +231,24 @@ const Nbmolviz2dView = Backbone.View.extend({
       nodesModel.set('selected_atom_indices', this.model.get('selected_atom_indices'));
     });
 
-    const nodesView = new NodesView({
-      model: nodesModel,
-      svg: this.svg,
-      simulation,
-    });
-    nodesView.onClickNode = (node) => {
-      const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
-      const index = selectedAtomIndices.indexOf(node.index);
-
-      if (index !== -1) {
-        selectedAtomIndices.splice(index, 1);
-      } else {
-        selectedAtomIndices.push(node.index);
-      }
-
-      this.model.set('selected_atom_indices', selectedAtomIndices);
-      this.model.save();
-    };
-    nodesView.render();
+    if (!this.nodesView) {
+      this.nodesView = new NodesView({
+        model: nodesModel,
+        svg: this.svg,
+        simulation,
+      });
+      this.nodesView.onClickNode = this.onClickNode.bind(this);
+      this.nodesView.render();
+    }
 
     function ticked() {
-      nodesView.renderTransform();
-      linksView.renderPosition();
+      this.nodesView.renderTransform();
+      this.linksView.renderPosition();
     }
 
     simulation
         .nodes(this.graph.nodes)
-        .on('tick', ticked);
+        .on('tick', ticked.bind(this));
 
     simulation.force('link')
         .links(this.graph.links);
