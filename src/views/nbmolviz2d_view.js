@@ -37,36 +37,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     this.model.on('change', this.render.bind(this));
   },
 
-  handleMessage(message) {
-    this.messages.push(message);
-    if (message.event === 'function_call') {
-      this.handleFunctionCall(message);
-    }
-  },
-
-  handleFunctionCall(event) {
-    // TODO: handle exceptions
-    // console.log('MolViz3DBaseWidget received a function call: '
-    //    + event.function_name +'('+ event.arguments+')');
-    // try {
-
-    // TODO get rid of RPC altogether
-    // For now, ignore this specific one and handle it by listening to the model
-    if (event.function_name === 'updateHighlightAtoms') {
-      return;
-    }
-
-    this.messages.push(event);
-    const myFunction = this[event.function_name];
-    const result = myFunction.apply(this, event.arguments);
-    this.send({
-      call_id: event.call_id,
-      result,
-      function_name: event.function_name,
-      event: 'function_done',
-    });
-  },
-
   onClickNode(node) {
     const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
     const index = selectedAtomIndices.indexOf(node.index);
@@ -99,11 +69,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     this.renderViewer();
     this.indexSvgElements();
 
-    // set up interactions with python
-    this.messages = [];
-    this.highlightedAtoms = [];
-    this.listenTo(this.model, 'msg:custom', this.handleMessage, this);
-
     if (typeof this.send === 'function') {
       this.send({ event: 'ready' });
     }
@@ -123,51 +88,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     graphStyle.id = 'graph_css_style';
     graphStyle.innerHTML = css;
     document.getElementsByTagName('head')[0].appendChild(graphStyle);
-  },
-
-  setAtomStyle(atoms, atomSpec) {
-    this.applyStyleSpec(atoms, this.svgNodes, atomSpec);
-  },
-
-  setBondStyle(bonds, bondSpec) {
-    this.applyStyleSpec(bonds, this.svgLinks, bondSpec);
-  },
-
-  applyStyleSpec(objs, objLookup, spec) {
-    // TODO: don't just assume children[0]
-    objs.forEach((o) => {
-      const obj = objLookup[o];
-      if (typeof(obj) === 'undefined') {
-        throw new Error(`no object ${o}`);
-      }
-      Object.keys(spec).forEach((st) => {
-        obj.children[0].style[st] = spec[st];
-      });
-    });
-  },
-
-  setAtomLabel(atom, text, spec) {
-    const obj = this.svgNodes[atom].children[1];
-    if (typeof(text) !== 'undefined') {
-      obj.innerHTML = text;
-    }
-    Object.keys(spec).forEach((st) => {
-      obj.style[st] = spec[st];
-    });
-  },
-
-  setBondLabel(bond, text, spec) {
-    const link = this.svgLinks[bond];
-    if (typeof(link) === 'undefined') {
-      // console.log(`No bond ${bond}`);
-      return;
-    }
-    if (typeof(text) !== 'undefined') {
-      link.children[1].innerHTML = text;
-    }
-    Object.keys(spec).forEach((st) => {
-      link.children[1].style[st] = spec[st];
-    });
   },
 
   indexSvgElements() {
