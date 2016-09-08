@@ -67,7 +67,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     // render it
     this.setCss();
     this.renderViewer();
-    this.indexSvgElements();
 
     if (typeof this.send === 'function') {
       this.send({ event: 'ready' });
@@ -88,27 +87,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     graphStyle.id = 'graph_css_style';
     graphStyle.innerHTML = css;
     document.getElementsByTagName('head')[0].appendChild(graphStyle);
-  },
-
-  indexSvgElements() {
-    this.svgNodes = {};
-    this.svgLinks = {};
-    const svgElements = this.svg._groups[0][0].children;
-
-    for (let i = 0; i < svgElements.length; ++i) {
-      const elem = svgElements[i];
-      if (elem.getAttribute('class') === 'node') {
-        const index = elem.getAttribute('index');
-        this.svgNodes[index] = elem;
-      }
-      if (elem.getAttribute('class') === 'link') {
-        const child = elem.children[0];
-        const source = child.getAttribute('source');
-        const target = child.getAttribute('target');
-        this.svgLinks[[source, target]] = elem;
-        this.svgLinks[[target, source]] = elem;
-      }
-    }
   },
 
   renderViewer() {
