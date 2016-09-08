@@ -227,7 +227,7 @@ const Nbmolviz2dView = Backbone.View.extend({
       nodes: this.graph.nodes,
       selected_atom_indices: this.model.get('selected_atom_indices'),
     });
-    this.model.on('change:selected_atom_indices', () => {
+    this.model.off().on('change:selected_atom_indices', () => {
       nodesModel.set('selected_atom_indices', this.model.get('selected_atom_indices'));
     });
 
