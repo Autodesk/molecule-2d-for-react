@@ -96,20 +96,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     // console.log(`${this.viewerId} is ready`);
   },
 
-  setCss() {
-    if (document.querySelectorAll('#graph_css_style').length > 0) {
-      return;
-    }
-    const css = '.link line {stroke: #696969;} \n ' +
-        '.link line.separator {stroke: #fff; stroke-width: 2px;} \n' +
-        '.node text {font: 10px sans-serif;  pointer-events: none;}';
-    const graphStyle = document.createElement('style');
-    graphStyle.type = 'text/css';
-    graphStyle.id = 'graph_css_style';
-    graphStyle.innerHTML = css;
-    document.getElementsByTagName('head')[0].appendChild(graphStyle);
-  },
-
   setAtomStyle(atoms, atomSpec) {
     this.applyStyleSpec(atoms, this.svgNodes, atomSpec);
   },
