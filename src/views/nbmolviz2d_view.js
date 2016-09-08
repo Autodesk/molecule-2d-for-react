@@ -81,7 +81,6 @@ const Nbmolviz2dView = Backbone.View.extend({
     this.el.style.position = 'relative';
 
     // render it
-    this.setCss();
     this.renderViewer();
     this.indexSvgElements();
 
