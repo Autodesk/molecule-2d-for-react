@@ -35,6 +35,13 @@ const Nbmolviz2dView = Backbone.View.extend({
 
   initialize() {
     this.model.on('change', this.render.bind(this));
+
+    if (process.env.NODE_ENV === 'DEVELOPMENT') {
+      if (!window.nbmolviz2d) {
+        window.nbmolviz2d = [];
+      }
+      window.nbmolviz2d.push(this);
+    }
   },
 
   onClickNode(node) {
@@ -52,9 +59,6 @@ const Nbmolviz2dView = Backbone.View.extend({
   },
 
   render() {
-    // TODO can we remove this?
-    document.last_2d_widget = this;
-
     // set properties
     this.graph = JSON.parse(JSON.stringify(this.model.get('graph')));
 
