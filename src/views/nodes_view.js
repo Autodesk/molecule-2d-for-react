@@ -5,6 +5,7 @@ import {
   scaleSqrt,
 } from 'd3';
 import molViewUtils from '../utils/mol_view_utils';
+require('../styles/nodes.scss');
 
 const SELECTED_COLOR = '#39f8ff';
 

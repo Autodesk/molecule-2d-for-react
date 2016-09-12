@@ -1,0 +1,10 @@
+.link {
+  line {
+    stroke: #696969;
+
+    &.separator {
+      stroke: #fff;
+      stroke-width: 2px;
+    }
+  }
+}
