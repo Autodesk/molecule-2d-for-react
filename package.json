@@ -29,9 +29,11 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-webpack": "^1.7.0",
     "mocha": "^2.4.5",
+    "nightwatch": "^0.9.8",
     "node-sass": "^3.9.3",
     "phantomjs-prebuilt": "^2.1.7",
     "sass-loader": "^4.0.2",
+    "selenium-binaries": "0.8.0",
     "sinon": "^2.0.0-pre.2",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2",
@@ -42,7 +44,8 @@
     "build": "webpack -p --config webpack.config.js",
     "watch": "webpack -p --config webpack.config.js --watch",
     "example": "webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "e2e": "./node_modules/nightwatch/bin/nightwatch"
   },
   "author": "Autodesk Bio/Nano",
   "license": "Apache 2.0",
