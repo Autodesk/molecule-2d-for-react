@@ -1,6 +1,6 @@
 {
   "name": "nbmolviz2d",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "2D molecule visualization",
   "main": "dist/bundle.js",
   "keywords": [
