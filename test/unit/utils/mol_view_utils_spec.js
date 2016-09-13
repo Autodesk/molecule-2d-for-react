@@ -3,7 +3,7 @@
 import { assert, expect } from 'chai';
 import sinon from 'sinon';
 import d3 from 'd3';
-import molViewUtils from '../../src/utils/mol_view_utils';
+import molViewUtils from '../../../src/utils/mol_view_utils';
 
 describe('molViewUtils', () => {
   describe('getBondWidth', () => {
