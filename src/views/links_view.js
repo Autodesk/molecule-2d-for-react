@@ -1,5 +1,6 @@
 import Backbone from 'backbone';
 import molViewUtils from '../utils/mol_view_utils';
+require('../styles/links.scss');
 
 const LinksView = Backbone.View.extend({
   initialize(options) {
