@@ -64,6 +64,15 @@ See [this great blog post](http://justjs.com/posts/npm-link-developing-your-own-
 
 Once you've linked your other project, you'll need to build nbmolviz2d (and likely your other project, too) every time you want your changes to reflect in your other project.  You can do this manually with `npm run build`.  If you want to rebuild nbmolviz2d automatically every time a change is made, run `npm run watch`.
 
+### Running Tests
+Unit tests can be run with:
+
+    npm test
+
+End-to-end tests can be run with:
+
+    npm run e2e
+
 ## License
 
 Copyright 2016 Autodesk Inc.
