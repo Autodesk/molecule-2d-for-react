@@ -73,6 +73,16 @@ End-to-end tests can be run with:
 
     npm run e2e
 
+### Releasing a new version
+A new version should be released via npm every time new code is merged to master.  Currently, this process is manual and obviously must be done by a collaborator of the npm package.
+
+On master, upgrading the version looks like the following:
+
+    npm version patch -m "Upgrade to %s for reasons"
+    git push origin master
+    git push origin --tags
+    npm publish
+
 ## License
 
 Copyright 2016 Autodesk Inc.
