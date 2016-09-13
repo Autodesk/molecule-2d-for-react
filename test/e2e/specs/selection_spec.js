@@ -1,7 +1,9 @@
+const setup = require('../fixtures/setup');
+
 module.exports = {
   'Selection Test': (browser) => {
-    browser
-      .url('http://localhost:4000')
+    setup(browser)
+      .url(browser.launchUrl)
       .waitForElementVisible('.nbmolviz2d svg', 1000, 'nbmolviz2s SVG element appears')
       .waitForElementVisible('g.node', 1000, 'Nodes are rendered in the SVG.')
       .click('g.node')
