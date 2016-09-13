@@ -34,7 +34,7 @@ const Nbmolviz2dModel = Backbone.Model.extend({
         { source: 1, target: 2, bond: 1, category: 0 },
       ],
     },
-    clicked_atom_index: -1,
+    selected_atom_indices: [],
     clicked_bond_indices: {},
     _atom_colors: {},
     width: 500.0,
