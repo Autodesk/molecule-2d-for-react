@@ -35,36 +35,13 @@ const Nbmolviz2dView = Backbone.View.extend({
 
   initialize() {
     this.model.on('change', this.render.bind(this));
-  },
 
-  handleMessage(message) {
-    this.messages.push(message);
-    if (message.event === 'function_call') {
-      this.handleFunctionCall(message);
+    if (process.env.NODE_ENV === 'DEVELOPMENT') {
+      if (!window.nbmolviz2d) {
+        window.nbmolviz2d = [];
+      }
+      window.nbmolviz2d.push(this);
     }
-  },
-
-  handleFunctionCall(event) {
-    // TODO: handle exceptions
-    // console.log('MolViz3DBaseWidget received a function call: '
-    //    + event.function_name +'('+ event.arguments+')');
-    // try {
-
-    // TODO get rid of RPC altogether
-    // For now, ignore this specific one and handle it by listening to the model
-    if (event.function_name === 'updateHighlightAtoms') {
-      return;
-    }
-
-    this.messages.push(event);
-    const myFunction = this[event.function_name];
-    const result = myFunction.apply(this, event.arguments);
-    this.send({
-      call_id: event.call_id,
-      result,
-      function_name: event.function_name,
-      event: 'function_done',
-    });
   },
 
   onClickNode(node) {
@@ -82,9 +59,6 @@ const Nbmolviz2dView = Backbone.View.extend({
   },
 
   render() {
-    // TODO can we remove this?
-    document.last_2d_widget = this;
-
     // set properties
     this.graph = JSON.parse(JSON.stringify(this.model.get('graph')));
 
@@ -96,84 +70,12 @@ const Nbmolviz2dView = Backbone.View.extend({
 
     // render it
     this.renderViewer();
-    this.indexSvgElements();
-
-    // set up interactions with python
-    this.messages = [];
-    this.highlightedAtoms = [];
-    this.listenTo(this.model, 'msg:custom', this.handleMessage, this);
 
     if (typeof this.send === 'function') {
       this.send({ event: 'ready' });
     }
 
     // console.log(`${this.viewerId} is ready`);
-  },
-
-  setAtomStyle(atoms, atomSpec) {
-    this.applyStyleSpec(atoms, this.svgNodes, atomSpec);
-  },
-
-  setBondStyle(bonds, bondSpec) {
-    this.applyStyleSpec(bonds, this.svgLinks, bondSpec);
-  },
-
-  applyStyleSpec(objs, objLookup, spec) {
-    // TODO: don't just assume children[0]
-    objs.forEach((o) => {
-      const obj = objLookup[o];
-      if (typeof(obj) === 'undefined') {
-        throw new Error(`no object ${o}`);
-      }
-      Object.keys(spec).forEach((st) => {
-        obj.children[0].style[st] = spec[st];
-      });
-    });
-  },
-
-  setAtomLabel(atom, text, spec) {
-    const obj = this.svgNodes[atom].children[1];
-    if (typeof(text) !== 'undefined') {
-      obj.innerHTML = text;
-    }
-    Object.keys(spec).forEach((st) => {
-      obj.style[st] = spec[st];
-    });
-  },
-
-  setBondLabel(bond, text, spec) {
-    const link = this.svgLinks[bond];
-    if (typeof(link) === 'undefined') {
-      // console.log(`No bond ${bond}`);
-      return;
-    }
-    if (typeof(text) !== 'undefined') {
-      link.children[1].innerHTML = text;
-    }
-    Object.keys(spec).forEach((st) => {
-      link.children[1].style[st] = spec[st];
-    });
-  },
-
-  indexSvgElements() {
-    this.svgNodes = {};
-    this.svgLinks = {};
-    const svgElements = this.svg._groups[0][0].children;
-
-    for (let i = 0; i < svgElements.length; ++i) {
-      const elem = svgElements[i];
-      if (elem.getAttribute('class') === 'node') {
-        const index = elem.getAttribute('index');
-        this.svgNodes[index] = elem;
-      }
-      if (elem.getAttribute('class') === 'link') {
-        const child = elem.children[0];
-        const source = child.getAttribute('source');
-        const target = child.getAttribute('target');
-        this.svgLinks[[source, target]] = elem;
-        this.svgLinks[[target, source]] = elem;
-      }
-    }
   },
 
   renderViewer() {
