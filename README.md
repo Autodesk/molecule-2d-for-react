@@ -1,6 +1,8 @@
 # nbmolviz2d
 This project provides a 2D visualization of any molecule using D3 and Backbone.  It's also very easy to adapt this to work in a Jupyter Notebook as an [ipywidgets](https://github.com/ipython/ipywidgets) module, as it was made for the [Molecular Design Toolkit](https://github.com/Autodesk/molecular-design-toolkit) project.
 
+<img src="https://raw.githubusercontent.com/Autodesk/nbmolviz2d/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
+
 ## Installation
 
     npm install nbmolviz2d
