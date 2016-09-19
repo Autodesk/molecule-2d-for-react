@@ -23,7 +23,7 @@ const molViewUtils = {
       throw new Error('d.bond must be at least 0');
     }
 
-    return `${d.bond * 4 - 2}px`;
+    return `${(d.bond * 4) - 2}px`;
   },
 
   chooseColor(d, defaultValue) {
@@ -35,7 +35,7 @@ const molViewUtils = {
   },
 
   withDefault(test, defaultValue) {
-    if (typeof(test) === 'undefined') {
+    if (typeof test === 'undefined') {
       return defaultValue;
     }
 

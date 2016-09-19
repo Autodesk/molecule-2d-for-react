@@ -95,9 +95,9 @@ const Nbmolviz2dView = Backbone.View.extend({
 
     const simulation = forceSimulation()
       .force('link', forceLink()
-        .id((d) => d.index)
-        .distance((d) => molViewUtils.withDefault(d.distance, 20))
-        .strength((d) => molViewUtils.withDefault(d.strength, 1.0))
+        .id(d => d.index)
+        .distance(d => molViewUtils.withDefault(d.distance, 20))
+        .strength(d => molViewUtils.withDefault(d.strength, 1.0))
       )
       .force('charge', forceManyBody())
       .force('center', forceCenter(width / 2, height / 2));

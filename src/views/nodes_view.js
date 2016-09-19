@@ -5,6 +5,7 @@ import {
   scaleSqrt,
 } from 'd3';
 import molViewUtils from '../utils/mol_view_utils';
+
 require('../styles/nodes.scss');
 
 const SELECTED_COLOR = '#39f8ff';
@@ -35,7 +36,7 @@ const NodesView = Backbone.View.extend({
 
   renderTransform() {
     this.svg.selectAll('.node')
-      .attr('transform', (d) =>
+      .attr('transform', d =>
         `translate(${d.x || 0},${d.y || 0})`
       );
   },
@@ -43,7 +44,7 @@ const NodesView = Backbone.View.extend({
   render() {
     const nodes = this.svg
       .selectAll('.node')
-      .data(this.model.get('nodes'), (d) => d.index);
+      .data(this.model.get('nodes'), d => d.index);
 
     const newNodesG = nodes.enter()
       .append('g')
@@ -53,7 +54,7 @@ const NodesView = Backbone.View.extend({
     const selectedAtoms = this.model.get('selected_atom_indices');
 
     newNodesG
-      .attr('index', (d) => d.index)
+      .attr('index', d => d.index)
       .call(drag()
         .on('start', this.dragstarted.bind(this))
         .on('drag', this.dragged.bind(this))
@@ -61,7 +62,7 @@ const NodesView = Backbone.View.extend({
       );
 
     this.svg.selectAll('.node')
-      .classed('selected', (d) =>
+      .classed('selected', d =>
         (selectedAtoms.indexOf(d.index) === -1 ? '' : SELECTED_COLOR)
     );
 
@@ -70,10 +71,10 @@ const NodesView = Backbone.View.extend({
     // circle for each atom (background color white by default)
     newNodesG.append('circle')
       .attr('class', 'atom-circle')
-      .attr('r', (d) => radius(molViewUtils.withDefault(d.size, 1.5)))
-      .style('fill', (d) => molViewUtils.chooseColor(d, 'white'));
+      .attr('r', d => radius(molViewUtils.withDefault(d.size, 1.5)))
+      .style('fill', d => molViewUtils.chooseColor(d, 'white'));
     this.svg.selectAll('.atom-circle')
-      .style('stroke', (d) =>
+      .style('stroke', d =>
         (selectedAtoms.indexOf(d.index) === -1 ? '' : SELECTED_COLOR)
       );
 
@@ -82,7 +83,7 @@ const NodesView = Backbone.View.extend({
       .attr('class', 'atom-label')
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
-      .text((d) => d.atom);
+      .text(d => d.atom);
     this.svg.selectAll('.atom-label')
       .attr('fill', (d) => {
         const color = (selectedAtoms.indexOf(d.index) === -1 ? '#000000' : SELECTED_COLOR);

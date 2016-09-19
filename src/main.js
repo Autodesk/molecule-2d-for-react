@@ -16,11 +16,11 @@
 
 // Set up jquery for Backbone
 import jquery from 'jquery';
+import Nbmolviz2dModel from './models/nbmolviz2d_model';
+import Nbmolviz2dView from './views/nbmolviz2d_view';
+
 if (window) {
   window.jquery = jquery;
 }
-
-import Nbmolviz2dModel from './models/nbmolviz2d_model';
-import Nbmolviz2dView from './views/nbmolviz2d_view';
 
 export { Nbmolviz2dModel, Nbmolviz2dView };
