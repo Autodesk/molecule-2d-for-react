@@ -17,10 +17,10 @@
 // Set up jquery for Backbone
 import jquery from 'jquery';
 import Nbmolviz2dModel from './models/nbmolviz2d_model';
-import Nbmolviz2dView from './views/nbmolviz2d_view';
+import ReactMolecule2D from './components/react_molecule_2d.jsx';
 
 if (window) {
   window.jquery = jquery;
 }
 
-export { Nbmolviz2dModel, Nbmolviz2dView };
+export { Nbmolviz2dModel, ReactMolecule2D };

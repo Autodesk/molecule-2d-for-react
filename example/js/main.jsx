@@ -1,6 +1,6 @@
+import Backbone from 'backbone';
 import React from 'react';
 import { render } from 'react-dom';
-import Backbone from 'backbone';
 import ExampleSettingsView from './example_settings_view';
 import { Nbmolviz2dModel, ReactMolecule2D } from '../../src/main.js';
 import bipyridine from './bipyridine';

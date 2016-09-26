@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Backbone from 'backbone';
+import React from 'react';
 import {
   select,
   forceSimulation,
@@ -29,10 +29,7 @@ import molViewUtils from '../utils/mol_view_utils';
 
 // TODO make sure root model is in sync with derivatives
 
-const Nbmolviz2dView = Backbone.View.extend({
-
-  tagName: 'div',
-
+class ReactMolecule2D extends React.Component {
   initialize() {
     this.model.on('change', this.render.bind(this));
 
@@ -42,7 +39,7 @@ const Nbmolviz2dView = Backbone.View.extend({
       }
       window.nbmolviz2d.push(this);
     }
-  },
+  }
 
   onClickNode(node) {
     const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
@@ -56,42 +53,17 @@ const Nbmolviz2dView = Backbone.View.extend({
 
     this.model.set('selected_atom_indices', selectedAtomIndices);
     this.model.save();
-  },
+  }
 
-  render() {
-    // set properties
-    this.graph = JSON.parse(JSON.stringify(this.model.get('graph')));
-
-    // setup the div
-    this.el.id = this.model.get('id');
-    this.el.style.width = this.model.get('width');
-    this.el.style.height = this.model.get('height');
-    this.el.style.position = 'relative';
-
-    // render it
+  componentDidMount() {
     this.renderViewer();
-
-    if (typeof this.send === 'function') {
-      this.send({ event: 'ready' });
-    }
-
-    // console.log(`${this.viewerId} is ready`);
-  },
+  }
 
   renderViewer() {
-    const width = this.model.get('width');
-    const height = this.model.get('height');
+    // Copy modelData to prevent d3 from modifying it
+    const modelData = JSON.parse(JSON.stringify(this.props.modelData));
 
-    if (this.el.querySelectorAll('svg').length) {
-      this.svg = select(this.el).select('svg');
-    } else {
-      this.svg = select(this.el).append('svg');
-    }
-
-    this.svg
-      .attr('width', width)
-      .attr('height', height)
-      .attr('border', 1);
+    const svgD3 = select(this.svg);
 
     const simulation = forceSimulation()
       .force('link', forceLink()
@@ -100,28 +72,25 @@ const Nbmolviz2dView = Backbone.View.extend({
         .strength(d => molViewUtils.withDefault(d.strength, 1.0))
       )
       .force('charge', forceManyBody())
-      .force('center', forceCenter(width / 2, height / 2));
+      .force('center', forceCenter(this.props.width / 2, this.props.height / 2));
 
     this.linksView = new LinksView({
       model: new LinksModel({
-        links: this.graph.links,
+        links: modelData.links,
       }),
-      svg: this.svg,
+      svg: svgD3,
     });
     this.linksView.render();
 
     const nodesModel = new NodesModel({
-      nodes: this.graph.nodes,
-      selected_atom_indices: this.model.get('selected_atom_indices'),
-    });
-    this.model.off().on('change:selected_atom_indices', () => {
-      nodesModel.set('selected_atom_indices', this.model.get('selected_atom_indices'));
+      nodes: modelData.nodes,
+      selected_atom_indices: this.props.selectedAtomIds,
     });
 
     if (!this.nodesView) {
       this.nodesView = new NodesView({
         model: nodesModel,
-        svg: this.svg,
+        svg: svgD3,
         simulation,
       });
       this.nodesView.onClickNode = this.onClickNode.bind(this);
@@ -134,12 +103,38 @@ const Nbmolviz2dView = Backbone.View.extend({
     }
 
     simulation
-        .nodes(this.graph.nodes)
+        .nodes(modelData.nodes)
         .on('tick', ticked.bind(this));
 
     simulation.force('link')
-        .links(this.graph.links);
-  },
-});
+        .links(modelData.links);
+  }
 
-export default Nbmolviz2dView;
+  render() {
+    return (
+      <svg
+        ref={(c) => { this.svg = c; }}
+        width={this.props.width}
+        height={this.props.height}
+      />
+    );
+  }
+}
+
+ReactMolecule2D.defaultProps = {
+  width: 500.0,
+  height: 500.0,
+  selectedAtomIds: [],
+};
+
+ReactMolecule2D.propTypes = {
+  width: React.PropTypes.number,
+  height: React.PropTypes.number,
+  modelData: React.PropTypes.shape({
+    nodes: React.PropTypes.array,
+    links: React.PropTypes.array,
+  }).isRequired,
+  selectedAtomIds: React.PropTypes.arrayOf(React.PropTypes.number),
+};
+
+export default ReactMolecule2D;
