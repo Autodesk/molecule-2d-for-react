@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-// Set up jquery for Backbone
-import jquery from 'jquery';
-import Nbmolviz2dModel from './models/nbmolviz2d_model';
 import ReactMolecule2D from './components/react_molecule_2d.jsx';
 
-if (window) {
-  window.jquery = jquery;
-}
-
-export { Nbmolviz2dModel, ReactMolecule2D };
+export default ReactMolecule2D;

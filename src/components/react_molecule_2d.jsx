@@ -26,8 +26,6 @@ import Nodes from '../components/nodes.jsx';
 import Links from '../components/links.jsx';
 import molViewUtils from '../utils/mol_view_utils';
 
-// TODO make sure root model is in sync with derivatives
-
 class ReactMolecule2D extends React.Component {
   static renderTransform() {
     // Nodes

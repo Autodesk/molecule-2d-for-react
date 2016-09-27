@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import ExampleSettings from './example_settings.jsx';
-import { ReactMolecule2D } from '../../src/main.js';
+import ReactMolecule2D from '../../src/main.js';
 import bipyridine from './bipyridine';
 
 class Example extends React.Component {
