@@ -48,10 +48,9 @@ class ReactMolecule2D extends React.Component {
 
     // keep edge labels pinned to the edges
     links.selectAll('text')
-      .attr('x', d => {
-        // console.log('zomg', d);
-        return (d.source.x + d.target.x) / 2.0
-      })
+      .attr('x', d =>
+        (d.source.x + d.target.x) / 2.0
+      )
       .attr('y', d =>
         (d.source.y + d.target.y) / 2.0
       );
@@ -61,10 +60,22 @@ class ReactMolecule2D extends React.Component {
     super(props);
 
     this.onClickNode = this.onClickNode.bind(this);
+    this.onDragStartedNode = this.onDragStartedNode.bind(this);
+    this.onDragEndedNode = this.onDragEndedNode.bind(this);
+
+    this.state = {
+      selectedAtomIds: [],
+    };
   }
 
   componentDidMount() {
     this.renderD3();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      selectedAtomIds: nextProps.selectedAtomIds,
+    });
   }
 
   componentDidUpdate() {
@@ -72,27 +83,34 @@ class ReactMolecule2D extends React.Component {
   }
 
   onClickNode(node) {
-    const selectedAtomIds = this.props.selectedAtomIds.slice(0);
-    const index = selectedAtomIds.indexOf(node.id);
+    const selectedAtomIds = this.state.selectedAtomIds.slice(0);
+    const index = selectedAtomIds.indexOf(node.index);
 
     if (index !== -1) {
       selectedAtomIds.splice(index, 1);
     } else {
-      selectedAtomIds.push(node.id);
+      selectedAtomIds.push(node.index);
     }
 
-    // TODO update selection here
-    console.log('TODO update selectedAtomIds', selectedAtomIds);
+    this.setState({
+      selectedAtomIds,
+    });
+
+    this.props.onChangeSelection(selectedAtomIds);
   }
 
   onDragStartedNode(d) {
-    if (!d3Event.active) this.simulation.alphaTarget(0.3).restart();
+    if (!d3Event.active) {
+      this.simulation.alphaTarget(0.3).restart();
+    }
     d.fx = d.x;
     d.fy = d.y;
   }
 
   onDragEndedNode(d) {
-    if (!d3Event.active) this.simulation.alphaTarget(0);
+    if (!d3Event.active) {
+      this.simulation.alphaTarget(0);
+    }
     d.fx = null;
     d.fy = null;
   }
@@ -101,7 +119,7 @@ class ReactMolecule2D extends React.Component {
     // Copy modelData to prevent d3 from modifying it
     const modelData = this.props.modelData;
 
-    const simulation = forceSimulation()
+    this.simulation = forceSimulation()
       .force('link', forceLink()
         .distance(d => molViewUtils.withDefault(d.distance, 20))
         .strength(d => molViewUtils.withDefault(d.strength, 1.0))
@@ -109,11 +127,11 @@ class ReactMolecule2D extends React.Component {
       .force('charge', forceManyBody())
       .force('center', forceCenter(this.props.width / 2, this.props.height / 2));
 
-    simulation
+    this.simulation
         .nodes(modelData.nodes)
         .on('tick', () => ReactMolecule2D.renderTransform());
 
-    simulation.force('link')
+    this.simulation.force('link')
         .links(modelData.links);
   }
 
@@ -125,13 +143,15 @@ class ReactMolecule2D extends React.Component {
         height={this.props.height}
       >
         <Links
-          selectedAtomIds={this.props.selectedAtomIds}
+          selectedAtomIds={this.state.selectedAtomIds}
           links={this.props.modelData.links}
         />
         <Nodes
-          selectedAtomIds={this.props.selectedAtomIds}
+          selectedAtomIds={this.state.selectedAtomIds}
           nodes={this.props.modelData.nodes}
           onClickNode={this.onClickNode}
+          onDragStartedNode={this.onDragStartedNode}
+          onDragEndedNode={this.onDragEndedNode}
         />
       </svg>
     );
@@ -142,6 +162,7 @@ ReactMolecule2D.defaultProps = {
   width: 500.0,
   height: 500.0,
   selectedAtomIds: [],
+  onChangeSelection: () => {},
 };
 
 ReactMolecule2D.propTypes = {
@@ -152,6 +173,7 @@ ReactMolecule2D.propTypes = {
     links: React.PropTypes.array,
   }).isRequired,
   selectedAtomIds: React.PropTypes.arrayOf(React.PropTypes.number),
+  onChangeSelection: React.PropTypes.func,
 };
 
 export default ReactMolecule2D;

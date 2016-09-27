@@ -49,6 +49,9 @@ The width of the SVG element.
 ### height {Number} [500]
 The height of the SVG element.
 
+### onChangeSelection {Function}
+Called whenever selectedAtomIds is changed.  Passed selectedAtomIds.
+
 ## Development
 A typical development flow might be to run the example while editing the code, where you'll want any changes to be immediately reflected in the example running in the browser.  In that case you should run:
 
