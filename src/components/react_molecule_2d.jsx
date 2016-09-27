@@ -15,96 +15,103 @@
  */
 import React from 'react';
 import {
-  select,
-  forceSimulation,
+  event as d3Event,
   forceLink,
   forceManyBody,
+  forceSimulation,
   forceCenter,
+  selectAll,
 } from 'd3';
-import NodesView from '../views/nodes_view';
-import NodesModel from '../models/nodes_model';
-import LinksModel from '../models/links_model';
-import LinksView from '../views/links_view';
+import Nodes from '../components/nodes.jsx';
+import Links from '../components/links.jsx';
 import molViewUtils from '../utils/mol_view_utils';
 
 // TODO make sure root model is in sync with derivatives
 
 class ReactMolecule2D extends React.Component {
-  initialize() {
-    this.model.on('change', this.render.bind(this));
+  static renderTransform() {
+    // Nodes
+    selectAll('.node')
+      .attr('transform', d =>
+        `translate(${d.x || 0},${d.y || 0})`
+      );
 
-    if (process.env.NODE_ENV === 'DEVELOPMENT') {
-      if (!window.nbmolviz2d) {
-        window.nbmolviz2d = [];
-      }
-      window.nbmolviz2d.push(this);
-    }
+    // Links
+    const links = selectAll('.link');
+
+    // keep edges pinned to their nodes
+    links.selectAll('line')
+      .attr('x1', d => d.source.x)
+      .attr('y1', d => d.source.y)
+      .attr('x2', d => d.target.x)
+      .attr('y2', d => d.target.y);
+
+    // keep edge labels pinned to the edges
+    links.selectAll('text')
+      .attr('x', d => {
+        // console.log('zomg', d);
+        return (d.source.x + d.target.x) / 2.0
+      })
+      .attr('y', d =>
+        (d.source.y + d.target.y) / 2.0
+      );
   }
 
-  onClickNode(node) {
-    const selectedAtomIndices = this.model.get('selected_atom_indices').slice(0);
-    const index = selectedAtomIndices.indexOf(node.index);
+  constructor(props) {
+    super(props);
 
-    if (index !== -1) {
-      selectedAtomIndices.splice(index, 1);
-    } else {
-      selectedAtomIndices.push(node.index);
-    }
-
-    this.model.set('selected_atom_indices', selectedAtomIndices);
-    this.model.save();
+    this.onClickNode = this.onClickNode.bind(this);
   }
 
   componentDidMount() {
-    this.renderViewer();
+    this.renderD3();
   }
 
-  renderViewer() {
-    // Copy modelData to prevent d3 from modifying it
-    const modelData = JSON.parse(JSON.stringify(this.props.modelData));
+  componentDidUpdate() {
+    this.renderD3();
+  }
 
-    const svgD3 = select(this.svg);
+  onClickNode(node) {
+    const selectedAtomIds = this.props.selectedAtomIds.slice(0);
+    const index = selectedAtomIds.indexOf(node.id);
+
+    if (index !== -1) {
+      selectedAtomIds.splice(index, 1);
+    } else {
+      selectedAtomIds.push(node.id);
+    }
+
+    // TODO update selection here
+    console.log('TODO update selectedAtomIds', selectedAtomIds);
+  }
+
+  onDragStartedNode(d) {
+    if (!d3Event.active) this.simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  onDragEndedNode(d) {
+    if (!d3Event.active) this.simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+
+  renderD3() {
+    // Copy modelData to prevent d3 from modifying it
+    const modelData = this.props.modelData;
 
     const simulation = forceSimulation()
       .force('link', forceLink()
-        .id(d => d.index)
         .distance(d => molViewUtils.withDefault(d.distance, 20))
         .strength(d => molViewUtils.withDefault(d.strength, 1.0))
       )
       .force('charge', forceManyBody())
       .force('center', forceCenter(this.props.width / 2, this.props.height / 2));
 
-    this.linksView = new LinksView({
-      model: new LinksModel({
-        links: modelData.links,
-      }),
-      svg: svgD3,
-    });
-    this.linksView.render();
-
-    const nodesModel = new NodesModel({
-      nodes: modelData.nodes,
-      selected_atom_indices: this.props.selectedAtomIds,
-    });
-
-    if (!this.nodesView) {
-      this.nodesView = new NodesView({
-        model: nodesModel,
-        svg: svgD3,
-        simulation,
-      });
-      this.nodesView.onClickNode = this.onClickNode.bind(this);
-      this.nodesView.render();
-    }
-
-    function ticked() {
-      this.nodesView.renderTransform();
-      this.linksView.renderPosition();
-    }
-
     simulation
         .nodes(modelData.nodes)
-        .on('tick', ticked.bind(this));
+        .on('tick', () => ReactMolecule2D.renderTransform());
 
     simulation.force('link')
         .links(modelData.links);
@@ -116,7 +123,17 @@ class ReactMolecule2D extends React.Component {
         ref={(c) => { this.svg = c; }}
         width={this.props.width}
         height={this.props.height}
-      />
+      >
+        <Links
+          selectedAtomIds={this.props.selectedAtomIds}
+          links={this.props.modelData.links}
+        />
+        <Nodes
+          selectedAtomIds={this.props.selectedAtomIds}
+          nodes={this.props.modelData.nodes}
+          onClickNode={this.onClickNode}
+        />
+      </svg>
     );
   }
 }
