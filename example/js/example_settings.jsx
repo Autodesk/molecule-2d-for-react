@@ -30,12 +30,10 @@ class ExampleSettings extends React.Component {
     try {
       selectedAtomIds = JSON.parse(event.target.value);
     } catch (err) {
-      console.error(err);
+      throw err;
     }
 
-    if (selectedAtomIds) {
-      this.props.onChangeSelection(selectedAtomIds);
-    }
+    this.props.onChangeSelection(selectedAtomIds);
   }
 
   render() {
