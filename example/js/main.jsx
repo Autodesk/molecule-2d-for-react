@@ -1,25 +1,44 @@
-import Backbone from 'backbone';
 import React from 'react';
 import { render } from 'react-dom';
-import ExampleSettingsView from './example_settings_view';
-import { Nbmolviz2dModel, ReactMolecule2D } from '../../src/main.js';
+import ExampleSettings from './example_settings.jsx';
+import { ReactMolecule2D } from '../../src/main.js';
 import bipyridine from './bipyridine';
 
-Backbone.sync = () => {};
+class Example extends React.Component {
+  constructor(props) {
+    super(props);
 
-const model = new Nbmolviz2dModel({
-  graph: bipyridine,
-});
+    this.state = {
+      selectedAtomIds: [],
+    };
+
+    this.onChangeSelection = this.onChangeSelection.bind(this);
+  }
+
+  onChangeSelection(selectedAtomIds) {
+    this.setState({
+      selectedAtomIds,
+    });
+  }
+
+  render() {
+    return (
+      <div className="container">
+        <ReactMolecule2D
+          modelData={bipyridine}
+          selectedAtomIds={this.state.selectedAtomIds}
+          onChangeSelection={this.onChangeSelection}
+        />
+        <ExampleSettings
+          selectedAtomIds={this.state.selectedAtomIds}
+          onChangeSelection={this.onChangeSelection}
+        />
+      </div>
+    );
+  }
+}
 
 render(
-  <ReactMolecule2D
-    modelData={bipyridine}
-  />,
+  <Example />,
   document.querySelector('.nbmolviz2d')
 );
-
-// Set up example settings controls
-const settingsView = new ExampleSettingsView({
-  model,
-});
-document.querySelector('.data').appendChild(settingsView.render().el);
