@@ -31,6 +31,8 @@ class Nodes extends React.Component {
     const nodes = container.selectAll('.node')
       .data(this.props.nodes, d => d.index);
 
+    nodes.exit().remove();
+
     const newNodesG = nodes.enter()
       .append('g')
       .attr('class', 'node')
