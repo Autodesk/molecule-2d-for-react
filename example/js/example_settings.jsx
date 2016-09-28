@@ -39,6 +39,9 @@ class ExampleSettings extends React.Component {
   render() {
     return (
       <div>
+        <button onClick={this.props.onToggleMolecule}>
+          Toggle Molecule
+        </button>
         <h4>selectedAtomIds</h4>
         <input
           value={this.state.selectedAtomIds}
@@ -53,6 +56,7 @@ class ExampleSettings extends React.Component {
 ExampleSettings.propTypes = {
   selectedAtomIds: React.PropTypes.arrayOf(React.PropTypes.number),
   onChangeSelection: React.PropTypes.func,
+  onToggleMolecule: React.PropTypes.func,
 };
 
 export default ExampleSettings;

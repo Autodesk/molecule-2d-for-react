@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import ExampleSettings from './example_settings.jsx';
 import ReactMolecule2D from '../../src/main.js';
 import bipyridine from './bipyridine';
+import residue from './residue';
 
 class Example extends React.Component {
   constructor(props) {
@@ -10,9 +11,11 @@ class Example extends React.Component {
 
     this.state = {
       selectedAtomIds: [],
+      modelData: residue,
     };
 
     this.onChangeSelection = this.onChangeSelection.bind(this);
+    this.onToggleMolecule = this.onToggleMolecule.bind(this);
   }
 
   onChangeSelection(selectedAtomIds) {
@@ -21,17 +24,24 @@ class Example extends React.Component {
     });
   }
 
+  onToggleMolecule() {
+    this.setState({
+      modelData: this.state.modelData === bipyridine ? residue : bipyridine,
+    });
+  }
+
   render() {
     return (
       <div className="container">
         <ReactMolecule2D
-          modelData={bipyridine}
+          modelData={this.state.modelData}
           selectedAtomIds={this.state.selectedAtomIds}
           onChangeSelection={this.onChangeSelection}
         />
         <ExampleSettings
           selectedAtomIds={this.state.selectedAtomIds}
           onChangeSelection={this.onChangeSelection}
+          onToggleMolecule={this.onToggleMolecule}
         />
       </div>
     );

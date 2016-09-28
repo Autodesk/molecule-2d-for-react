@@ -18,9 +18,13 @@ class Links extends React.Component {
   renderD3() {
     const container = select(this.linksContainer);
 
+    container.html('');
+
     const links = container
       .selectAll('.link')
-      .data(this.props.links);
+      .data(this.props.links, d =>
+        (typeof d.id !== 'undefined' ? d.id : d)
+      );
 
     const newLinksG = links.enter()
       .append('g')
@@ -29,8 +33,8 @@ class Links extends React.Component {
     // all edges (includes both bonds and distance constraints)
     newLinksG
       .append('line')
-      .attr('source', d => d.source.index)
-      .attr('target', d => d.target.index)
+      .attr('source', d => (typeof d.id !== 'undefined' ? d.id : d.source.index))
+      .attr('target', d => (typeof d.id !== 'undefined' ? d.id : d.target.index))
       .style('stroke-width', molViewUtils.getBondWidth)
       .style('stroke-dasharray', (d) => {
         if (d.style === 'dashed') {

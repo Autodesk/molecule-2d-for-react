@@ -114,7 +114,6 @@ class ReactMolecule2D extends React.Component {
   }
 
   renderD3() {
-    // Copy modelData to prevent d3 from modifying it
     const modelData = this.props.modelData;
 
     this.simulation = forceSimulation()
@@ -130,7 +129,8 @@ class ReactMolecule2D extends React.Component {
         .on('tick', () => ReactMolecule2D.renderTransform());
 
     this.simulation.force('link')
-        .links(modelData.links);
+      .id(d => (typeof d.id !== 'undefined' ? d.id : d.index))
+      .links(modelData.links);
   }
 
   render() {
@@ -141,7 +141,6 @@ class ReactMolecule2D extends React.Component {
         height={this.props.height}
       >
         <Links
-          selectedAtomIds={this.state.selectedAtomIds}
           links={this.props.modelData.links}
         />
         <Nodes
