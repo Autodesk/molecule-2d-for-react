@@ -82,12 +82,12 @@ class ReactMolecule2D extends React.Component {
 
   onClickNode(node) {
     const selectedAtomIds = this.state.selectedAtomIds.slice(0);
-    const index = selectedAtomIds.indexOf(node.index);
+    const index = selectedAtomIds.indexOf(node.id);
 
     if (index !== -1) {
       selectedAtomIds.splice(index, 1);
     } else {
-      selectedAtomIds.push(node.index);
+      selectedAtomIds.push(node.id);
     }
 
     this.setState({
