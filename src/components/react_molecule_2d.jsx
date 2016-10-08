@@ -24,6 +24,7 @@ import {
 } from 'd3';
 import Nodes from '../components/nodes.jsx';
 import Links from '../components/links.jsx';
+import moleculeUtils from '../utils/molecule_utils';
 import molViewUtils from '../utils/mol_view_utils';
 
 class ReactMolecule2D extends React.Component {
@@ -71,9 +72,11 @@ class ReactMolecule2D extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({
-      selectedAtomIds: nextProps.selectedAtomIds,
-    });
+    if (!moleculeUtils.compareIds(this.state.selectedAtomIds, nextProps.selectedAtomIds)) {
+      this.setState({
+        selectedAtomIds: nextProps.selectedAtomIds,
+      });
+    }
   }
 
   componentDidUpdate() {
@@ -114,8 +117,6 @@ class ReactMolecule2D extends React.Component {
   }
 
   renderD3() {
-    const modelData = this.props.modelData;
-
     this.simulation = forceSimulation()
       .force('link', forceLink()
         .distance(d => molViewUtils.withDefault(d.distance, 20))
@@ -125,15 +126,17 @@ class ReactMolecule2D extends React.Component {
       .force('center', forceCenter(this.props.width / 2, this.props.height / 2));
 
     this.simulation
-        .nodes(modelData.nodes)
+        .nodes(this.nodes)
         .on('tick', () => ReactMolecule2D.renderTransform());
 
     this.simulation.force('link')
       .id(d => (typeof d.id !== 'undefined' ? d.id : d.index))
-      .links(modelData.links);
+      .links(this.props.modelData.links);
   }
 
   render() {
+    this.nodes = JSON.parse(JSON.stringify(this.props.modelData.nodes));
+
     return (
       <svg
         ref={(c) => { this.svg = c; }}
@@ -145,7 +148,7 @@ class ReactMolecule2D extends React.Component {
         />
         <Nodes
           selectedAtomIds={this.state.selectedAtomIds}
-          nodes={this.props.modelData.nodes}
+          nodes={this.nodes}
           onClickNode={this.onClickNode}
           onDragStartedNode={this.onDragStartedNode}
           onDragEndedNode={this.onDragEndedNode}

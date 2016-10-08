@@ -29,17 +29,14 @@ class Nodes extends React.Component {
   renderD3() {
     const container = select(this.nodesContainer);
     const nodes = container.selectAll('.node')
-      .data(this.props.nodes, d => d.index);
+      .data(this.props.nodes, d => d.id);
 
-    nodes.exit().remove();
-
-    const newNodesG = nodes.enter()
-      .append('g')
-      .attr('class', 'node')
-      .on('click', this.props.onClickNode);
+    const newNodesG = nodes.enter().append('g');
 
     newNodesG
-      .attr('index', d => d.index)
+      .attr('class', 'node')
+      .on('click', this.props.onClickNode)
+      .attr('index', d => d.id)
       .call(drag()
         .on('start', this.props.onDragStartedNode)
         .on('drag', Nodes.onDragged)
@@ -75,6 +72,8 @@ class Nodes extends React.Component {
           SELECTED_COLOR : '');
         return molViewUtils.withDefault(d.textcolor, color);
       });
+
+    nodes.exit().remove();
   }
 
   render() {
