@@ -73,7 +73,8 @@ class Nodes extends React.Component {
         return molViewUtils.withDefault(d.textcolor, color);
       });
 
-    nodes.exit().remove();
+    nodes.exit()
+      .remove();
   }
 
   render() {

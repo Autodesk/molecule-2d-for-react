@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    example: ['./example/js/main.jsx'],
+    example: ['babel-polyfill', './example/js/main.jsx'],
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

@@ -18,13 +18,9 @@ class Links extends React.Component {
   renderD3() {
     const container = select(this.linksContainer);
 
-    container.html('');
-
     const links = container
       .selectAll('.link')
-      .data(this.props.links, d =>
-        (typeof d.id !== 'undefined' ? d.id : d)
-      );
+      .data(this.props.links, d => d.id);
 
     const newLinksG = links.enter()
       .append('g')
@@ -32,9 +28,12 @@ class Links extends React.Component {
 
     // all edges (includes both bonds and distance constraints)
     newLinksG
-      .append('line')
-      .attr('source', d => (typeof d.id !== 'undefined' ? d.id : d.source.index))
-      .attr('target', d => (typeof d.id !== 'undefined' ? d.id : d.target.index))
+      .append('line');
+    container.selectAll('.link').selectAll('line')
+      .attr('source', d =>
+        (typeof d.source.id !== 'undefined' ? d.source.id : d.source)
+      )
+      .attr('target', d => (typeof d.target.id !== 'undefined' ? d.target.id : d.target))
       .style('stroke-width', molViewUtils.getBondWidth)
       .style('stroke-dasharray', (d) => {
         if (d.style === 'dashed') {
@@ -53,7 +52,8 @@ class Links extends React.Component {
 
     // text placeholders for all edges
     newLinksG
-      .append('text')
+      .append('text');
+    container.selectAll('.link').selectAll('text')
       .attr('x', d => d.source.x)
       .attr('y', d => d.source.y)
       .attr('text-anchor', 'middle')
@@ -74,6 +74,9 @@ class Links extends React.Component {
       .attr('class', 'separator')
       .style('stroke', d => molViewUtils.chooseColor(d, 'black'))
       .style('stroke-width', () => molViewUtils.getBondWidth(1));
+
+    links.exit()
+      .remove();
   }
 
   render() {
