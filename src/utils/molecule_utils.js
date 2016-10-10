@@ -48,12 +48,20 @@ const moleculeUtils = {
 
   /**
    * Given old and new arrays of models, update the old array's models in place based on id
+   * If model ids don't perfectly match, just return newArray
    * O(n^2) :(
    * @param oldArray {Array}
    * @param newArray {Array}
    * @returns {Array}
    */
-  updateModelsInPlace(oldArray, newArray) {
+  updateModels(oldArray, newArray) {
+    const sameIds = moleculeUtils.compareIds(
+      oldArray.map(model => model.id), newArray.map(model => model.id)
+    );
+    if (!sameIds) {
+      return newArray;
+    }
+
     // Add or update everything in newArray to oldArray
     newArray.forEach((newModel) => {
       let found = false;

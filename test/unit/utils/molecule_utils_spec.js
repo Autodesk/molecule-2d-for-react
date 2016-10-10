@@ -171,11 +171,11 @@ describe('moleculeUtils', () => {
     });
   });
 
-  describe('updateModelsInPlace', () => {
+  describe('updateModels', () => {
     let oldModels;
     let newModels;
 
-    describe('when given a nonexistant element', () => {
+    describe('when given mismatching arrays', () => {
       beforeEach(() => {
         oldModels = [];
         newModels = [
@@ -183,9 +183,9 @@ describe('moleculeUtils', () => {
         ];
       });
 
-      it('returns oldModels with the new model added', () => {
-        const result = moleculeUtils.updateModelsInPlace(oldModels, newModels);
-        expect(result).to.equal(oldModels);
+      it('returns newModels', () => {
+        const result = moleculeUtils.updateModels(oldModels, newModels);
+        expect(result).to.equal(newModels);
         expect(result[0]).to.equal(newModels[0]);
       });
     });
@@ -201,28 +201,10 @@ describe('moleculeUtils', () => {
       });
 
       it('returns oldModels with that element modified with new data', () => {
-        const result = moleculeUtils.updateModelsInPlace(oldModels, newModels);
+        const result = moleculeUtils.updateModels(oldModels, newModels);
         expect(result).to.equal(oldModels);
         expect(result[0]).to.equal(oldModels[0]);
         expect(result[0].something).to.equal(newModels[0].something);
-      });
-    });
-
-    describe('when old contains something not in new', () => {
-      beforeEach(() => {
-        oldModels = [
-          { id: 1 },
-        ];
-        newModels = [
-          { id: 0 },
-        ];
-      });
-
-      it('returns oldModels with that element removed', () => {
-        const result = moleculeUtils.updateModelsInPlace(oldModels, newModels);
-        expect(result).to.equal(oldModels);
-        expect(result.length).to.equal(1);
-        expect(result[0]).to.equal(newModels[0]);
       });
     });
   });

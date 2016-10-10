@@ -40,18 +40,18 @@ class ReactMolecule2D extends React.Component {
 
     // keep edges pinned to their nodes
     links.selectAll('line')
-      .attr('x1', d => d.source.x)
-      .attr('y1', d => d.source.y)
-      .attr('x2', d => d.target.x)
-      .attr('y2', d => d.target.y);
+      .attr('x1', d => d.source.x || 0)
+      .attr('y1', d => d.source.y || 0)
+      .attr('x2', d => d.target.x || 0)
+      .attr('y2', d => d.target.y || 0);
 
     // keep edge labels pinned to the edges
     links.selectAll('text')
       .attr('x', d =>
-        (d.source.x + d.target.x) / 2.0
+        ((d.source.x || 0) + (d.target.x || 0)) / 2.0
       )
       .attr('y', d =>
-        (d.source.y + d.target.y) / 2.0
+        ((d.source.y || 0) + (d.target.y || 0)) / 2.0
       );
   }
 
@@ -135,14 +135,8 @@ class ReactMolecule2D extends React.Component {
   }
 
   render() {
-    //console.log('existing nodes before', JSON.stringify(this.nodes));
-    //console.log('incoming nodes before', JSON.stringify(this.props.modelData.nodes));
-    this.nodes = moleculeUtils.updateModelsInPlace(this.nodes || [], this.props.modelData.nodes);
-    //console.log('nodes after', JSON.stringify(this.nodes));
-    //console.log('existing links before', JSON.stringify(this.links));
-    //console.log('incoming links before', this.props.modelData.links.map(link => JSON.stringify(link)));
-    this.links = moleculeUtils.updateModelsInPlace(this.links || [], this.props.modelData.links);
-    //console.log('links after', JSON.stringify(this.links));
+    this.nodes = moleculeUtils.updateModels(this.nodes || [], this.props.modelData.nodes);
+    this.links = moleculeUtils.updateModels(this.links || [], this.props.modelData.links);
 
     return (
       <svg

@@ -55,8 +55,8 @@ class Links extends React.Component {
     newLinksG
       .append('text');
     container.selectAll('.link').selectAll('text')
-      .attr('x', d => d.source.x)
-      .attr('y', d => d.source.y)
+      .attr('x', d => d.source.x || 0)
+      .attr('y', d => d.source.y || 0)
       .attr('text-anchor', 'middle')
       .text(() => ' ');
 
