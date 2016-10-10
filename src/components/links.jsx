@@ -28,8 +28,9 @@ class Links extends React.Component {
 
     // all edges (includes both bonds and distance constraints)
     newLinksG
-      .append('line');
-    container.selectAll('.link').selectAll('line')
+      .append('line')
+      .attr('class', 'link-line');
+    container.selectAll('.link-line')
       .attr('source', d =>
         (typeof d.source.id !== 'undefined' ? d.source.id : d.source)
       )
@@ -63,7 +64,8 @@ class Links extends React.Component {
     newLinksG
       .filter(d => d.bond > 1)
       .append('line')
-      .attr('class', 'separator')
+      .attr('class', 'separator separator-double');
+    container.selectAll('.separator-double')
       .style('stroke', '#FFF')
       .style('stroke-width', d => `${(d.bond * 4) - 5}px`);
 
@@ -71,7 +73,8 @@ class Links extends React.Component {
     newLinksG
       .filter(d => d.bond === 3)
       .append('line')
-      .attr('class', 'separator')
+      .attr('class', 'separator separator-triple');
+    container.selectAll('.separator-triple')
       .style('stroke', d => molViewUtils.chooseColor(d, 'black'))
       .style('stroke-width', () => molViewUtils.getBondWidth(1));
 
