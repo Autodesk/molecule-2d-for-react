@@ -152,6 +152,23 @@ describe('moleculeUtils', () => {
         expect(result.obj.two).to.equal(newObject.obj.two);
       });
     });
+
+    describe('when given a newObject that isn\'t an object', () => {
+      beforeEach(() => {
+        oldObject = {
+          one: {},
+        };
+        newObject = {
+          one: 'wait im not an object...',
+        };
+      });
+
+      it('returns newObject', () => {
+        const result = moleculeUtils.updateObjectInPlace(oldObject, newObject);
+        expect(result).to.equal(oldObject);
+        expect(result.one).to.equal(newObject.one);
+      });
+    });
   });
 
   describe('updateModelsInPlace', () => {
@@ -187,7 +204,25 @@ describe('moleculeUtils', () => {
         const result = moleculeUtils.updateModelsInPlace(oldModels, newModels);
         expect(result).to.equal(oldModels);
         expect(result[0]).to.equal(oldModels[0]);
-        expect(result[0].booped).to.equal(newModels[0].something);
+        expect(result[0].something).to.equal(newModels[0].something);
+      });
+    });
+
+    describe('when old contains something not in new', () => {
+      beforeEach(() => {
+        oldModels = [
+          { id: 1 },
+        ];
+        newModels = [
+          { id: 0 },
+        ];
+      });
+
+      it('returns oldModels with that element removed', () => {
+        const result = moleculeUtils.updateModelsInPlace(oldModels, newModels);
+        expect(result).to.equal(oldModels);
+        expect(result.length).to.equal(1);
+        expect(result[0]).to.equal(newModels[0]);
       });
     });
   });

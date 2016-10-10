@@ -40,9 +40,7 @@ class ReactMolecule2D extends React.Component {
 
     // keep edges pinned to their nodes
     links.selectAll('line')
-      .attr('x1', d => {
-        return d.source.x;
-      })
+      .attr('x1', d => d.source.x)
       .attr('y1', d => d.source.y)
       .attr('x2', d => d.target.x)
       .attr('y2', d => d.target.y);
@@ -132,13 +130,19 @@ class ReactMolecule2D extends React.Component {
         .on('tick', () => ReactMolecule2D.renderTransform());
 
     this.simulation.force('link')
-      .id(d => (typeof d.id !== 'undefined' ? d.id : d.index))
+      .id(d => d.id)
       .links(this.links);
   }
 
   render() {
+    //console.log('existing nodes before', JSON.stringify(this.nodes));
+    //console.log('incoming nodes before', JSON.stringify(this.props.modelData.nodes));
     this.nodes = moleculeUtils.updateModelsInPlace(this.nodes || [], this.props.modelData.nodes);
+    //console.log('nodes after', JSON.stringify(this.nodes));
+    //console.log('existing links before', JSON.stringify(this.links));
+    //console.log('incoming links before', this.props.modelData.links.map(link => JSON.stringify(link)));
     this.links = moleculeUtils.updateModelsInPlace(this.links || [], this.props.modelData.links);
+    //console.log('links after', JSON.stringify(this.links));
 
     return (
       <svg

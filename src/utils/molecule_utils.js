@@ -36,7 +36,7 @@ const moleculeUtils = {
    */
   updateObjectInPlace(oldObject, newObject) {
     Object.keys(newObject).forEach((key) => {
-      if (oldObject[key] instanceof Object && !(oldObject[key] instanceof Array)) {
+      if (oldObject[key] instanceof Object && newObject[key] instanceof Object) {
         oldObject[key] = moleculeUtils.updateObjectInPlace(oldObject[key], newObject[key]);
       } else {
         oldObject[key] = newObject[key];
@@ -54,20 +54,32 @@ const moleculeUtils = {
    * @returns {Array}
    */
   updateModelsInPlace(oldArray, newArray) {
-    newArray.forEach((model) => {
+    // Add or update everything in newArray to oldArray
+    newArray.forEach((newModel) => {
       let found = false;
       for (let i = 0; i < oldArray.length; i += 1) {
-        if (oldArray[i].id === model.id) {
-          oldArray[i] = moleculeUtils.updateObjectInPlace(oldArray[i], model);
+        if (oldArray[i].id === newModel.id) {
+          oldArray[i] = moleculeUtils.updateObjectInPlace(oldArray[i], newModel);
           found = true;
           break;
         }
       }
 
       if (!found) {
-        oldArray.push(model);
+        oldArray.push(newModel);
       }
     });
+
+    // Remove els in oldArray that don't exist in newArray
+    for (let i = 0; i < oldArray.length; i += 1) {
+      const oldModel = oldArray[i];
+      const newModel = newArray.find(newModelI => newModelI.id === oldModel.id);
+
+      if (!newModel) {
+        oldArray.splice(i, 1);
+        i -= 1;
+      }
+    }
 
     return oldArray;
   },
