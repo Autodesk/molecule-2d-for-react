@@ -63,7 +63,7 @@ class ReactMolecule2D extends React.Component {
     this.onDragEndedNode = this.onDragEndedNode.bind(this);
 
     this.state = {
-      selectedAtomIds: [],
+      selectedAtomIds: props.selectedAtomIds || [],
     };
   }
 
