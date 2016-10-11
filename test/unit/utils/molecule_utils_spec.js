@@ -96,6 +96,17 @@ describe('moleculeUtils', () => {
         expect(moleculeUtils.compareIds(idsA, idsB)).to.equal(false);
       });
     });
+
+    describe('when B has some (not all) same values with duplicates with A', () => {
+      beforeEach(() => {
+        idsA = [2, 3, 1, 1, 1, 1, 2, 4];
+        idsB = [1, 2, 3];
+      });
+
+      it('returns false', () => {
+        expect(moleculeUtils.compareIds(idsA, idsB)).to.equal(false);
+      });
+    });
   });
 
   describe('updateObjectInPlace', () => {

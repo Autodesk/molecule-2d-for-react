@@ -1,3 +1,5 @@
+import { Set as ISet } from 'immutable';
+
 const moleculeUtils = {
   /**
    * Given two arrays of ids, return true if they contain the same values in any order,
@@ -12,19 +14,10 @@ const moleculeUtils = {
       return false;
     }
 
-    const setA = new Set();
+    const setA = new ISet(idsA);
+    const setB = new ISet(idsB);
 
-    for (let i = 0; i < idsA.length; i += 1) {
-      setA.add(idsA[i]);
-    }
-
-    for (let i = 0; i < idsB.length; i += 1) {
-      if (!setA.has(idsB[i])) {
-        return false;
-      }
-    }
-
-    return true;
+    return setA.equals(setB);
   },
 
   /**
