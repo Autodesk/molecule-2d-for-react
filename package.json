@@ -49,7 +49,7 @@
   "scripts": {
     "test": "karma start",
     "build": "webpack -p --config webpack.config.js",
-    "watch": "webpack -p --config webpack.config.js --watch",
+    "watch": "webpack --config webpack.config.js --watch",
     "example": "NODE_ENV=DEVELOPMENT webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
     "prepublish": "npm run build",
     "e2e": "./node_modules/nightwatch/bin/nightwatch"
