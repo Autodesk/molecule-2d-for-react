@@ -16,6 +16,10 @@ class Links extends React.Component {
   }
 
   renderD3() {
+    if (!this.linksContainer) {
+      return;
+    }
+
     const container = select(this.linksContainer);
 
     const links = container

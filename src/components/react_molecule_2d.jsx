@@ -20,7 +20,7 @@ import {
   forceManyBody,
   forceSimulation,
   forceCenter,
-  selectAll,
+  select,
 } from 'd3';
 import Nodes from '../components/nodes.jsx';
 import Links from '../components/links.jsx';
@@ -28,33 +28,6 @@ import moleculeUtils from '../utils/molecule_utils';
 import molViewUtils from '../utils/mol_view_utils';
 
 class ReactMolecule2d extends React.Component {
-  static renderTransform() {
-    // Nodes
-    selectAll('.node')
-      .attr('transform', d =>
-        `translate(${d.x || 0},${d.y || 0})`
-      );
-
-    // Links
-    const links = selectAll('.link');
-
-    // keep edges pinned to their nodes
-    links.selectAll('line')
-      .attr('x1', d => d.source.x || 0)
-      .attr('y1', d => d.source.y || 0)
-      .attr('x2', d => d.target.x || 0)
-      .attr('y2', d => d.target.y || 0);
-
-    // keep edge labels pinned to the edges
-    links.selectAll('text')
-      .attr('x', d =>
-        ((d.source.x || 0) + (d.target.x || 0)) / 2.0
-      )
-      .attr('y', d =>
-        ((d.source.y || 0) + (d.target.y || 0)) / 2.0
-      );
-  }
-
   constructor(props) {
     super(props);
 
@@ -77,6 +50,39 @@ class ReactMolecule2d extends React.Component {
 
   componentDidUpdate() {
     this.renderD3();
+  }
+
+  renderTransform = () => {
+    if (!this.svg) {
+      return;
+    }
+
+    const container = select(this.svg);
+
+    // Nodes
+    container.selectAll('.node')
+      .attr('transform', d =>
+        `translate(${d.x || 0},${d.y || 0})`
+      );
+
+    // Links
+    const links = container.selectAll('.link');
+
+    // keep edges pinned to their nodes
+    links.selectAll('line')
+      .attr('x1', d => d.source.x || 0)
+      .attr('y1', d => d.source.y || 0)
+      .attr('x2', d => d.target.x || 0)
+      .attr('y2', d => d.target.y || 0);
+
+    // keep edge labels pinned to the edges
+    links.selectAll('text')
+      .attr('x', d =>
+        ((d.source.x || 0) + (d.target.x || 0)) / 2.0
+      )
+      .attr('y', d =>
+        ((d.source.y || 0) + (d.target.y || 0)) / 2.0
+      );
   }
 
   onClickNode = (node) => {
@@ -123,7 +129,7 @@ class ReactMolecule2d extends React.Component {
 
     this.simulation
         .nodes(this.nodes)
-        .on('tick', () => ReactMolecule2d.renderTransform());
+        .on('tick', () => this.renderTransform());
 
     this.simulation.force('link')
       .id(d => d.id)

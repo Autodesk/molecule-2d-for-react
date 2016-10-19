@@ -27,6 +27,10 @@ class Nodes extends React.Component {
   }
 
   renderD3() {
+    if (!this.nodesContainer) {
+      return;
+    }
+
     const container = select(this.nodesContainer);
 
     const nodes = container.selectAll('.node')
