@@ -1,5 +1,3 @@
-import { Set as ISet } from 'immutable';
-
 const moleculeUtils = {
   /**
    * Given two arrays of ids, return true if they contain the same values in any order,
@@ -14,10 +12,27 @@ const moleculeUtils = {
       return false;
     }
 
-    const setA = new ISet(idsA);
-    const setB = new ISet(idsB);
+    const mapA = new Map();
+    idsA.forEach((id) => {
+      mapA.set(id, false);
+    });
 
-    return setA.equals(setB);
+    for (let id of idsB) {
+      // If an id exists in B but not in A, not equivalent
+      if (!mapA.has(id)) {
+        return false;
+      }
+      mapA.set(id, true);
+    }
+
+    // If an id exists in A but not B, not equivalent
+    for (let [id, value] of mapA) {
+      if (!value) {
+        return false;
+      }
+    }
+
+    return true;
   },
 
   /**
