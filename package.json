@@ -1,10 +1,12 @@
 {
-  "name": "nbmolviz2d",
+  "name": "react-molecule-2d",
   "version": "0.1.0",
   "description": "2D molecule visualization",
   "main": "dist/bundle.js",
   "keywords": [
     "molecule",
+    "chemical",
+    "react",
     "visualization",
     "d3",
     "2d"
@@ -58,6 +60,6 @@
   "license": "Apache 2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Autodesk/nbmolviz2d.git"
+    "url": "https://github.com/Autodesk/react-molecule-2d.git"
   }
 }

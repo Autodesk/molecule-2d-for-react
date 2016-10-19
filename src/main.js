@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 
-import ReactMolecule2D from './components/react_molecule_2d.jsx';
+import ReactMolecule2d from './components/react_molecule_2d.jsx';
 
-export default ReactMolecule2D;
+export default ReactMolecule2d;
