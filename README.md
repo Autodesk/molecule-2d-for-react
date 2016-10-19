@@ -23,8 +23,8 @@ This project provides a React component that displays an interactive 2D represen
 
 See example/js/main.js for a working example.
 
-## API
-In order to set up your molecule visualization, just pass in the proper data to the React component. Here are all of the parameters with explanations:
+## Props
+In order to set up your molecule visualization, just pass in the proper props data to the React component. Here are all of the parameters with explanations:
 
 ### modelData {Object} Required
 An object indicating the atoms an bonds to display.  Of the form:
