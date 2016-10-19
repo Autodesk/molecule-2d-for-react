@@ -13,18 +13,15 @@ class Example extends React.Component {
       selectedAtomIds: [],
       modelData: residue,
     };
-
-    this.onChangeSelection = this.onChangeSelection.bind(this);
-    this.onToggleMolecule = this.onToggleMolecule.bind(this);
   }
 
-  onChangeSelection(selectedAtomIds) {
+  onChangeSelection = (selectedAtomIds) => {
     this.setState({
       selectedAtomIds,
     });
   }
 
-  onToggleMolecule() {
+  onToggleMolecule = () => {
     this.setState({
       modelData: this.state.modelData === bipyridine ? residue : bipyridine,
     });

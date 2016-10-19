@@ -58,10 +58,6 @@ class ReactMolecule2d extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onClickNode = this.onClickNode.bind(this);
-    this.onDragStartedNode = this.onDragStartedNode.bind(this);
-    this.onDragEndedNode = this.onDragEndedNode.bind(this);
-
     this.state = {
       selectedAtomIds: props.selectedAtomIds || [],
     };
@@ -83,7 +79,7 @@ class ReactMolecule2d extends React.Component {
     this.renderD3();
   }
 
-  onClickNode(node) {
+  onClickNode = (node) => {
     const selectedAtomIds = this.state.selectedAtomIds.slice(0);
     const index = selectedAtomIds.indexOf(node.id);
 
@@ -100,7 +96,7 @@ class ReactMolecule2d extends React.Component {
     this.props.onChangeSelection(selectedAtomIds);
   }
 
-  onDragStartedNode(d) {
+  onDragStartedNode = (d) => {
     if (!d3Event.active) {
       this.simulation.alphaTarget(0.3).restart();
     }
@@ -108,7 +104,7 @@ class ReactMolecule2d extends React.Component {
     d.fy = d.y;
   }
 
-  onDragEndedNode(d) {
+  onDragEndedNode = (d) => {
     if (!d3Event.active) {
       this.simulation.alphaTarget(0);
     }

@@ -4,9 +4,6 @@ class ExampleSettings extends React.Component {
   constructor(props) {
     super(props);
 
-    this.onBlurSelection = this.onBlurSelection.bind(this);
-    this.onChangeSelection = this.onChangeSelection.bind(this);
-
     this.state = {
       selectedAtomIds: '',
     };
@@ -18,13 +15,13 @@ class ExampleSettings extends React.Component {
     });
   }
 
-  onChangeSelection(event) {
+  onChangeSelection = (event) => {
     this.setState({
       selectedAtomIds: event.target.value,
     });
   }
 
-  onBlurSelection(event) {
+  onBlurSelection = (event) => {
     let selectedAtomIds;
 
     try {
