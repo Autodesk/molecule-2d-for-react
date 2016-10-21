@@ -1,7 +1,7 @@
 {
-  "name": "react-molecule-2d",
+  "name": "molecule-2d-for-react",
   "version": "0.1.0",
-  "description": "2D molecule visualization",
+  "description": "2D molecule visualization using React and D3",
   "main": "dist/bundle.js",
   "keywords": [
     "molecule",
@@ -62,6 +62,6 @@
   "license": "Apache 2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Autodesk/react-molecule-2d.git"
+    "url": "https://github.com/Autodesk/molecule-2d-for-react.git"
   }
 }

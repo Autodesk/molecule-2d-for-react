@@ -4,7 +4,7 @@ module.exports = {
   'Selection Spec': (browser) => {
     setup(browser)
       .url(browser.launchUrl)
-      .waitForElementVisible('.react-molecule-2d svg', 1000, 'react-molecule-2d SVG element appears')
+      .waitForElementVisible('.molecule-2d svg', 1000, 'molecule-2d SVG element appears')
       .waitForElementVisible('g.node', 1000, 'Nodes are rendered in the SVG.')
       .click('g.node')
       .assert.elementPresent('g.node.selected', 'Clicking a node adds a selected class to it')

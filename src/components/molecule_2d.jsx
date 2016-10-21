@@ -27,7 +27,7 @@ import Links from '../components/links.jsx';
 import moleculeUtils from '../utils/molecule_utils';
 import molViewUtils from '../utils/mol_view_utils';
 
-class ReactMolecule2d extends React.Component {
+class Molecule2d extends React.Component {
   constructor(props) {
     super(props);
 
@@ -161,14 +161,14 @@ class ReactMolecule2d extends React.Component {
   }
 }
 
-ReactMolecule2d.defaultProps = {
+Molecule2d.defaultProps = {
   width: 500.0,
   height: 500.0,
   selectedAtomIds: [],
   onChangeSelection: () => {},
 };
 
-ReactMolecule2d.propTypes = {
+Molecule2d.propTypes = {
   width: React.PropTypes.number,
   height: React.PropTypes.number,
   modelData: React.PropTypes.shape({
@@ -179,4 +179,4 @@ ReactMolecule2d.propTypes = {
   onChangeSelection: React.PropTypes.func,
 };
 
-export default ReactMolecule2d;
+export default Molecule2d;

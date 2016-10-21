@@ -1,14 +1,14 @@
-# ReactMolecule2d
+# Molecule2d
 This project provides a React component that displays an interactive 2D representation of any molecule using D3.
 
-<img src="https://raw.githubusercontent.com/Autodesk/react-molecule-2d/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
+<img src="https://raw.githubusercontent.com/Autodesk/molecule-2d-for-react/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
 
 ## Installation
 
-    npm install react-molecule-2d
+    npm install molecule-2d-for-react
 
 ## Usage
-  <ReactMolecule2d
+  <Molecule2d
     modelData={{
       nodes: [
         { id: 0, atom: 'H' },
@@ -63,16 +63,16 @@ A typical development flow might be to run the example while editing the code, w
     npm run example
 
 ### Development within another project
-If you're using this in another project and want to make changes to this repository locally and see them reflected in your other project, first you'll need to do some setup.  You can point your other project to use the local copy of react-molecule-2d like this:
+If you're using this in another project and want to make changes to this repository locally and see them reflected in your other project, first you'll need to do some setup.  You can point your other project to use the local copy of Molecule2d like this:
 
-    cd ~/path/to/react-molecule-2d
+    cd ~/path/to/molecule-2d-for-react
     npm link
     cd ~/path/to/other-project
-    npm link react-molecule-2d
+    npm link molecule-2d-for-react
 
 See [this great blog post](http://justjs.com/posts/npm-link-developing-your-own-npm-modules-without-tears) for more info on `npm link`.
 
-Once you've linked your other project, you'll need to build react-molecule-2d (and likely your other project, too) every time you want your changes to reflect in your other project.  You can do this manually with `npm run build`.  If you want to rebuild react-molecule-2d automatically every time a change is made, run `npm run watch`.
+Once you've linked your other project, you'll need to build Molecule2d (and likely your other project, too) every time you want your changes to reflect in your other project.  You can do this manually with `npm run build`.  If you want to rebuild Molecule2d automatically every time a change is made, run `npm run watch`.
 
 ### Running Tests
 Unit tests can be run with:

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from 'react-dom';
 import ExampleSettings from './example_settings.jsx';
-import ReactMolecule2d from '../../src/main.js';
+import Molecule2d from '../../src/main.js';
 import bipyridine from './bipyridine';
 import residue from './residue';
 
@@ -30,7 +30,7 @@ class Example extends React.Component {
   render() {
     return (
       <div className="container">
-        <ReactMolecule2d
+        <Molecule2d
           modelData={this.state.modelData}
           selectedAtomIds={this.state.selectedAtomIds}
           onChangeSelection={this.onChangeSelection}
@@ -47,5 +47,5 @@ class Example extends React.Component {
 
 render(
   <Example />,
-  document.querySelector('.react-molecule-2d')
+  document.querySelector('.molecule-2d')
 );
