@@ -1,11 +1,13 @@
 {
   "extends": "airbnb",
   "rules": {
+    "react/no-unused-prop-types": 1,
     // These rules are violated by normal d3 usage
-    "no-underscore-dangle": 0,
-    "no-param-reassign": 0,
-    "react/jsx-no-bind": 0,
+    "no-underscore-dangle": 1,
+    "no-param-reassign": 1,
+    "react/jsx-no-bind": 1,
   },
+  "parser": "babel-eslint",
   "globals": {
     "window": true,
     "document": true,

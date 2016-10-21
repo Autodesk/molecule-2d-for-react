@@ -1,10 +1,10 @@
 const setup = require('../fixtures/setup');
 
 module.exports = {
-  'Selection Test': (browser) => {
+  'Selection Spec': (browser) => {
     setup(browser)
       .url(browser.launchUrl)
-      .waitForElementVisible('.nbmolviz2d svg', 1000, 'nbmolviz2s SVG element appears')
+      .waitForElementVisible('.molecule-2d svg', 1000, 'molecule-2d SVG element appears')
       .waitForElementVisible('g.node', 1000, 'Nodes are rendered in the SVG.')
       .click('g.node')
       .assert.elementPresent('g.node.selected', 'Clicking a node adds a selected class to it')

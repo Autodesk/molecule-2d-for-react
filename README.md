@@ -1,47 +1,49 @@
-# nbmolviz2d
-This project provides a 2D visualization of any molecule using D3 and Backbone.  It's also very easy to adapt this to work in a Jupyter Notebook as an [ipywidgets](https://github.com/ipython/ipywidgets) module, as it was made for the [Molecular Design Toolkit](https://github.com/Autodesk/molecular-design-toolkit) project.
+# Molecule2d
+This project provides a React component that displays an interactive 2D representation of any molecule using D3.
 
-<img src="https://raw.githubusercontent.com/Autodesk/nbmolviz2d/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
+<img src="https://raw.githubusercontent.com/Autodesk/molecule-2d-for-react/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
 
 ## Installation
 
-    npm install nbmolviz2d
+    npm install molecule-2d-for-react
 
 ## Usage
-nbmolviz2d is a Backbone module, so you can use it like this:
-
-    import Backbone from 'backbone';
-    import { Nbmolviz2dModel, Nbmolviz2dView } from 'nbmolviz2d';
-
-    const model = new MolWidget2DModel();
-    const view = new MolWidget2DView({
-      model,
-      el: document.querySelector('.app'),
-    });
-
-    view.render();
-
-See example/js/main.js for a working example.
-
-## API
-In order to set up your molecule visualization, just pass in the proper data to MolWidget2DModel. Here are all of the parameters with explanations:
-
-### graph {Object} [H2O]
-An object indicating the atoms and bonds to display.  Of the form:
-
-    {
+  <Molecule2d
+    modelData={{
       nodes: [
-        { atom: 'H', category: 'blue', index: 0, id: 0 },
+        { id: 0, atom: 'H' },
         ...
       ],
       links: [
-        { source: 0, target: 2, bond: 1, category: 0 },
+        { id: 0, source: 0, target: 1, strength: 1, distance: 30.0, bond: 1 },
+        ...
+      ],
+    }}
+  />
+
+See example/js/main.js for a working example.
+
+## Props
+In order to set up your molecule visualization, just pass in the proper props data to the React component. Here are all of the parameters with explanations:
+
+### modelData {Object} Required
+An object indicating the atoms an bonds to display.  Of the form:
+
+    {
+      nodes: [
+        { id: 0, atom: 'H' },
+        ...
+      ],
+      links: [
+        { id: 0, source: 0, target: 1, strength: 1, distance: 30.0, bond: 1 },
         ...
       ],
     }
 
-### selected_atom_indices {Array of Numbers} [[]]
-An array of atom indices to display as selected.  This will also update whenever the user clicks on an atom.
+See example/js/bipyridine.js for an example of working modelData for a real molecule.
+
+### selectedAtomIds {Array of Numbers} [[]]
+An array of atom ids to display as selected.  This is deep copied into internal state and updated whenever the user clicks on an atom.  See the `onChangeSelection` method below for how to listen to selection changes.
 
 ### width {Number} [500]
 The width of the SVG element.
@@ -49,22 +51,31 @@ The width of the SVG element.
 ### height {Number} [500]
 The height of the SVG element.
 
+### onChangeSelection {Function}
+Called whenever selectedAtomIds is changed.  Passed selectedAtomIds.
+
+## Use in a Jupyter notebook
+It's also very easy to adapt this to work in a Jupyter Notebook as an [ipywidgets](https://github.com/ipython/ipywidgets) module, as it was made for the [Molecular Design Toolkit](https://github.com/Autodesk/molecular-design-toolkit) project. The [source code](https://github.com/Autodesk/notebook-molecular-visualization/blob/30e843393135d8b2d78ac055a6e366eb9c0ffde9/js/src/nbmolviz_2d_component.jsx) shows how this was done by wrapping this project in a Backbone view.
+
+## What about 3d?
+Take a look at our sister project, [molecule-3d-for-react](https://github.com/Autodesk/molecule-3d-for-react), for a React component with a similar interface that renders a 3d visualization.
+
 ## Development
 A typical development flow might be to run the example while editing the code, where you'll want any changes to be immediately reflected in the example running in the browser.  In that case you should run:
 
     npm run example
 
 ### Development within another project
-If you're using this in another project and want to make changes to this repository locally and see them reflected in your other project, first you'll need to do some setup.  You can point your other project to use the local copy of nbmolviz2d like this:
+If you're using this in another project and want to make changes to this repository locally and see them reflected in your other project, first you'll need to do some setup.  You can point your other project to use the local copy of Molecule2d like this:
 
-    cd ~/path/to/nbmolviz2d
+    cd ~/path/to/molecule-2d-for-react
     npm link
     cd ~/path/to/other-project
-    npm link nbmolviz2d
+    npm link molecule-2d-for-react
 
 See [this great blog post](http://justjs.com/posts/npm-link-developing-your-own-npm-modules-without-tears) for more info on `npm link`.
 
-Once you've linked your other project, you'll need to build nbmolviz2d (and likely your other project, too) every time you want your changes to reflect in your other project.  You can do this manually with `npm run build`.  If you want to rebuild nbmolviz2d automatically every time a change is made, run `npm run watch`.
+Once you've linked your other project, you'll need to build Molecule2d (and likely your other project, too) every time you want your changes to reflect in your other project.  You can do this manually with `npm run build`.  If you want to rebuild Molecule2d automatically every time a change is made, run `npm run watch`.
 
 ### Running Tests
 Unit tests can be run with:
