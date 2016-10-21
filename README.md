@@ -57,6 +57,9 @@ Called whenever selectedAtomIds is changed.  Passed selectedAtomIds.
 ## Use in a Jupyter notebook
 It's also very easy to adapt this to work in a Jupyter Notebook as an [ipywidgets](https://github.com/ipython/ipywidgets) module, as it was made for the [Molecular Design Toolkit](https://github.com/Autodesk/molecular-design-toolkit) project. The [source code](https://github.com/Autodesk/notebook-molecular-visualization/blob/30e843393135d8b2d78ac055a6e366eb9c0ffde9/js/src/nbmolviz_2d_component.jsx) shows how this was done by wrapping this project in a Backbone view.
 
+## What about 3d?
+Take a look at our sister project, [molecule-3d-for-react](https://github.com/Autodesk/molecule-3d-for-react), for a React component with a similar interface that renders a 3d visualization.
+
 ## Development
 A typical development flow might be to run the example while editing the code, where you'll want any changes to be immediately reflected in the example running in the browser.  In that case you should run:
 
