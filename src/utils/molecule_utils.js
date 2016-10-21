@@ -17,7 +17,7 @@ const moleculeUtils = {
       mapA.set(id, false);
     });
 
-    for (let id of idsB) {
+    for (const id of idsB) {
       // If an id exists in B but not in A, not equivalent
       if (!mapA.has(id)) {
         return false;
@@ -26,7 +26,8 @@ const moleculeUtils = {
     }
 
     // If an id exists in A but not B, not equivalent
-    for (let [id, value] of mapA) {
+    for (const tuple of mapA) {
+      const value = tuple[1];
       if (!value) {
         return false;
       }

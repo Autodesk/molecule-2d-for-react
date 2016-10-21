@@ -52,39 +52,6 @@ class Molecule2d extends React.Component {
     this.renderD3();
   }
 
-  renderTransform = () => {
-    if (!this.svg) {
-      return;
-    }
-
-    const container = select(this.svg);
-
-    // Nodes
-    container.selectAll('.node')
-      .attr('transform', d =>
-        `translate(${d.x || 0},${d.y || 0})`
-      );
-
-    // Links
-    const links = container.selectAll('.link');
-
-    // keep edges pinned to their nodes
-    links.selectAll('line')
-      .attr('x1', d => d.source.x || 0)
-      .attr('y1', d => d.source.y || 0)
-      .attr('x2', d => d.target.x || 0)
-      .attr('y2', d => d.target.y || 0);
-
-    // keep edge labels pinned to the edges
-    links.selectAll('text')
-      .attr('x', d =>
-        ((d.source.x || 0) + (d.target.x || 0)) / 2.0
-      )
-      .attr('y', d =>
-        ((d.source.y || 0) + (d.target.y || 0)) / 2.0
-      );
-  }
-
   onClickNode = (node) => {
     const selectedAtomIds = this.state.selectedAtomIds.slice(0);
     const index = selectedAtomIds.indexOf(node.id);
@@ -116,6 +83,39 @@ class Molecule2d extends React.Component {
     }
     d.fx = null;
     d.fy = null;
+  }
+
+  renderTransform = () => {
+    if (!this.svg) {
+      return;
+    }
+
+    const container = select(this.svg);
+
+    // Nodes
+    container.selectAll('.node')
+      .attr('transform', d =>
+        `translate(${d.x || 0},${d.y || 0})`
+      );
+
+    // Links
+    const links = container.selectAll('.link');
+
+    // keep edges pinned to their nodes
+    links.selectAll('line')
+      .attr('x1', d => d.source.x || 0)
+      .attr('y1', d => d.source.y || 0)
+      .attr('x2', d => d.target.x || 0)
+      .attr('y2', d => d.target.y || 0);
+
+    // keep edge labels pinned to the edges
+    links.selectAll('text')
+      .attr('x', d =>
+        ((d.source.x || 0) + (d.target.x || 0)) / 2.0
+      )
+      .attr('y', d =>
+        ((d.source.y || 0) + (d.target.y || 0)) / 2.0
+      );
   }
 
   renderD3() {
