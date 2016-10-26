@@ -86,6 +86,8 @@ End-to-end tests can be run with:
 
     npm run e2e
 
+Both are run every time a commit is pushed to Github thanks to Jenkins.
+
 ### Releasing a new version
 A new version should be released via npm every time new code is merged to master.  Currently, this process is manual and obviously must be done by a collaborator of the npm package.
 
