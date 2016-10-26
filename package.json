@@ -51,7 +51,8 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "test": "karma start",
+    "test": "karma start --single-run",
+    "tdd": "karma start",
     "build": "webpack -p --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
     "example": "NODE_ENV=DEVELOPMENT webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
