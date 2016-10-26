@@ -14,9 +14,6 @@ const config = {
     log_path: '',
     host: '127.0.0.1',
     port: 4444, // standard selenium port
-    cli_args: { // chromedriver is downloaded by selenium-download (see readme)
-      'webdriver.chrome.driver': `${BINPATH}chromedriver`,
-    },
   },
   test_settings: {
     default: {
@@ -28,9 +25,12 @@ const config = {
         waitForConditionTimeout: 5000, // sometimes internet is slow so wait.
       },
       launch_url: 'http://localhost:4000',
-      desiredCapabilities: { // use Chrome as the default browser for tests
-        browserName: 'chrome',
+      desiredCapabilities: {
+        browserName: 'phantomjs',
         javascriptEnabled: true,
+        acceptSslCerts: true,
+        'phantomjs.binary.path': './node_modules/.bin/phantomjs',
+        'phantomjs.cli.args': [],
       },
     },
   },
