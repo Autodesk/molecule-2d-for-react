@@ -1,4 +1,6 @@
 # Molecule2d
+[![Build Status](https://travis-ci.org/Autodesk/molecule-2d-for-react.svg?branch=master)](https://travis-ci.org/Autodesk/molecule-2d-for-react)
+
 This project provides a React component that displays an interactive 2D representation of any molecule using D3.
 
 <img src="https://raw.githubusercontent.com/Autodesk/molecule-2d-for-react/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
