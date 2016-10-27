@@ -1,7 +1,16 @@
 language: node_js
 node_js:
-  - "6.4.0"
+- 6.4.0
 script:
-  - npm test
-  - npm run example &
-  - npm run e2e
+- npm test
+- npm run example &
+- npm run e2e
+deploy:
+  provider: npm
+  email: justinjmccandless@gmail.com
+  api_key:
+    secure: LCfY4dl0AI8fwb77PvjnL7LKzKGIkVFG2BbMxEipHHqH4X91xLSEvAYfafQsyYBspVc/erkupveOUC77aQe6FxdzSOiNlUD1x9hVFS0eQStZJpmAPj7YctSXWx5956ZW74aHSgVLdIjC68cl6FCAiymxKC5tRmPbNcUMOqLxMK1Tj+dGO83VIYz3nQxz9FuLMR6nCPTBUVu/+re9xlqmMqRj/b7S2GsuDxq00ReLl/5SHf4/o/ftmiOxHI8mFuayuJ4BnI/9JEytTRiUA40IkB8LRz8s/OnlVIcwSu7iGPKoeNiS+Mc+XWyIoKIGYCBRCnarZPelPlZk5CpUoH/S9G7H3hHeTiNLaVJpCrNKZ+hcpNqEifPOhegHAn1AqLVPqphfYG6Dt9uXAvPABDVrKqaVFAbQDZdfobIayfpxAm3pLl2ZEuKTSZfzzzY+yg75IAGE912d5dgGrkbqvZMVCVrhNbEBpKrHJrvb/MpsqvfhMwxgPPJu/xbWnTUhd7h8yyMXklNLoeDEHy4dcObQauxZmxEiqDaao+0AqlVQF6gSVtyfJxTAnBvgYJLQcACb3EBTQkjaPYuSDHt9AE6HsTRTzQLRbbTCzDW2F5i/EGdRD6uLHZUQDDnAMYXTrRYufIgfUdR3PkPMQFcX6kIGOFHuosxBGVFHSJKGkOtrJ8M=
+  on:
+    tags: true
+    branch: master
+    repo: Autodesk/molecule-2d-for-react
