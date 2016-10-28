@@ -1,4 +1,6 @@
 # Molecule2d
+[![Build Status](https://travis-ci.org/Autodesk/molecule-2d-for-react.svg?branch=master)](https://travis-ci.org/Autodesk/molecule-2d-for-react)
+
 This project provides a React component that displays an interactive 2D representation of any molecule using D3.
 
 <img src="https://raw.githubusercontent.com/Autodesk/molecule-2d-for-react/master/doc/viewer_screenshot.png" alt="screen shot" width="300" />
@@ -87,14 +89,11 @@ End-to-end tests can be run with:
     npm run e2e
 
 ### Releasing a new version
-A new version should be released via npm every time new code is merged to master.  Currently, this process is manual and obviously must be done by a collaborator of the npm package.
-
-On master, upgrading the version looks like the following:
+Travis automatically publishes any new tagged commit to NPM.  The best way to take advantage of this is to first create a new tagged commit using `npm version`:
 
     npm version patch -m "Upgrade to %s for reasons"
-    git push origin master
-    git push origin --tags
-    npm publish
+
+Then push that commit to a new release branch, push the tag with `git push origin --tags` and open a pull request on Github.  When you see that Travis has succeeded in deploying, merge it to master.
 
 ## License
 
