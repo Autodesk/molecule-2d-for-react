@@ -58,7 +58,6 @@
     "build": "webpack -p --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
     "example": "NODE_ENV=DEVELOPMENT webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
-    "postinstall": "node nightwatch.conf.js",
     "prepublish": "npm run build"
   },
   "author": "Autodesk Bio/Nano",
