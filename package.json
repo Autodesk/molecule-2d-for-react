@@ -1,6 +1,6 @@
 {
   "name": "molecule-2d-for-react",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "2D molecule visualization using React and D3",
   "main": "dist/bundle.js",
   "keywords": [
@@ -53,11 +53,11 @@
   "scripts": {
     "test": "karma start --single-run",
     "tdd": "karma start",
+    "setup-selenium": "node scripts/download_selenium.js",
     "e2e": "./node_modules/nightwatch/bin/nightwatch",
     "build": "webpack -p --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
     "example": "NODE_ENV=DEVELOPMENT webpack-dev-server --content-base example/ --config example/webpack.config.js --progress --colors",
-    "postinstall": "node nightwatch.conf.js",
     "prepublish": "npm run build"
   },
   "author": "Autodesk Bio/Nano",
