@@ -53,6 +53,7 @@
   "scripts": {
     "test": "karma start --single-run",
     "tdd": "karma start",
+    "setup-selenium": "node scripts/download_selenium.js",
     "e2e": "./node_modules/nightwatch/bin/nightwatch",
     "build": "webpack -p --config webpack.config.js",
     "watch": "webpack --config webpack.config.js --watch",
