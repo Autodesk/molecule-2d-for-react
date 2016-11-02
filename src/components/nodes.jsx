@@ -50,8 +50,8 @@ class Nodes extends React.Component {
 
     container.selectAll('.node')
       .classed('selected', d =>
-        (this.props.selectedAtomIds.find(atomId => atomId === d.id) ? SELECTED_COLOR : '')
-    );
+        (this.props.selectedAtomIds.indexOf(d.id) !== -1 ? SELECTED_COLOR : '')
+      );
 
     const radius = scaleSqrt().range([0, 6]);
 
@@ -62,7 +62,7 @@ class Nodes extends React.Component {
       .style('fill', d => molViewUtils.chooseColor(d, 'white'));
     selectAll('.atom-circle')
       .style('stroke', d =>
-        (this.props.selectedAtomIds.find(atomId => atomId === d.id) ? SELECTED_COLOR : '')
+        (this.props.selectedAtomIds.indexOf(d.id) !== -1 ? SELECTED_COLOR : '')
       );
 
     // atom labels
@@ -73,8 +73,8 @@ class Nodes extends React.Component {
       .text(d => d.atom);
     container.selectAll('.atom-label')
       .attr('fill', (d) => {
-        const color = (this.props.selectedAtomIds.find(atomId => atomId === d.id) ?
-          SELECTED_COLOR : '');
+        const color = this.props.selectedAtomIds.indexOf(d.id) !== -1 ?
+          SELECTED_COLOR : '';
         return molViewUtils.withDefault(d.textcolor, color);
       });
 
